@@ -1,0 +1,25 @@
+{
+  "name": "ui-grid",
+  "description": "angular ui-grid directive",
+  "main": "gulpfile.js",
+  "authors": [
+    "y1j2x34"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "ui-grid",
+    "angularjs",
+    "bootstrap",
+    "grid",
+    "directive"
+  ],
+  "homepage": "",
+  "dependencies": {
+    "angular": "angularjs#1.5.8",
+    "requirejs": "2.1.22",
+    "angular-sanitize": "1.5.8",
+    "bootstrap": "3.3.7",
+    "underscore": "^1.8.3",
+    "jquery": "2.2.4"
+  }
+}

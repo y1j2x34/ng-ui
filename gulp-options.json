@@ -1,0 +1,23 @@
+{
+    "webserver":{
+        "port": 8080,
+        "livereload": true,
+        "directoryListening": true,
+        "open": false
+    },
+    "source": {
+        "js": [
+            "src/app/**/*.controller.js",
+            "src/app/**/*.service.js",
+            "src/app/**/*.factory.js",
+            "src/app/**/*.provider.js",
+            "src/app/**/*.filter.js",
+            "src/app/**/*.module.js",
+            "src/app/**/*.config.js",
+            "src/app/**/*.directive.js",
+            "src/app/*.js",
+            "src/app/grid/renderers/*.js",
+            "src/app/**/*-require.js"
+        ]
+    }
+}

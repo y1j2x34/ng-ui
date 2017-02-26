@@ -1,0 +1,43 @@
+<div>
+    <span class="pull-right">
+        <ul class="pagination pagination-sm grid_pagination">
+            <li title="{{grid.page === 1? '已经是第一页了':'第1页'}}" ng-class="{'disabled': grid.page === 1}" ng-disabled="grid.page === 1" ng-click="grid.page > 1 &amp;&amp; grid.go(1)">
+                <a href="javascript:;">
+                    <i class="fa fa-angle-double-left"></i>
+                </a>
+            </li>
+            <li title="{{grid.page === 1? '已经是第一页了':'上一页'}}" ng-class="{'disabled': grid.page === 1}" ng-disabled="grid.page === 1" ng-click="grid.page > 1 &amp;&amp; grid.prevPage(1)">
+                <a href="javascript:;">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+            </li>
+            <li title="第{{page}}页" ng-class="{'active': page === grid.page}" ng-repeat="page in grid.pageNumbers | limitTo: 7" ng-click="grid.go(page)">
+                <a href="javascript:;" ng-bind="page"></a>
+            </li>
+            <li
+                title="{{grid.page == grid.pageCount ? '已经是最后一页':'下一页'}}"
+                ng-class="{'disabled':grid.page === grid.pageCount}"
+                ng-disabled="grid.page === grid.pageCount"
+                ng-click="grid.page < grid.pageCount &amp;&amp; grid.nextPage(1)">
+                <a href="javascript:;">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+            <li
+                title="{{grid.page == grid.pageCount ? '已经是最后一页':'最后一页'}}"
+                ng-class="{'disabled':grid.page === grid.pageCount}"
+                ng-disabled="grid.page === grid.pageCount"
+                ng-click="grid.page &lt; grid.pageCount &amp;&amp; grid.go(grid.pageCount)">
+                <a href="javascript:;">
+                    <i class="fa fa-angle-double-right"></i>
+                </a>
+            </li>
+        </ul>
+        <span class="grid_pager_status text-primary">
+            查询出<span ng-bind="grid.total"></span>条记录，每页
+            <select class="form-control grid_change_page_size" ng-model="grid.pageSize" ng-change="grid.changePageSize(grid.pageSize)" ng-options="ps as ps for ps in grid.pageSizes"></select>
+            条，共<span ng-bind="grid.pageCount"></span>页
+        </span>
+    </span>
+    <div class="clearfix"></div>
+</div>

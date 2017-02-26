@@ -1,0 +1,30 @@
+<div>
+    <div class="grid_container" ng-class="{'grid_fixedheader': grid.fixHeader}">
+        <div class="grid_header">
+            <table class="table" ng-class="{'table-bordered': grid.bordered}" ui-grid-header>
+                <thead>
+                    <tr>
+                        <th ng-repeat="header in grid.headers" class="grid_head" ui-grid-head-cell></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <div class="grid_body" ui-scrollbar="{'live':'on','theme':'minimal-dark','callbacks':grid.scrollbarCallbacks}" box-height="{{grid.gridHeight}}">
+            <table class="table table-hover" ng-class="{'table-bordered': grid.bordered}">
+                <tbody>
+                    <tr ui-grid-row ng-repeat="$rowdata in grid.data track by $index" ng-init="$rowIndex = $index" ng-class="{'even': ($index+1) % 2 === 0}" class="grid_row" data-index="{{$index}}">
+                        <td ng-repeat="$column in grid.columns" ui-grid-row-cell></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="text-center" ng-if="!grid.data || grid.data.length < 1">
+                <h2>没有数据</h2>
+            </div>
+        </div>
+        <div class="grid_toolbar_container">
+            <div ng-include="grid.footerTemplateUrl"> </div>
+        </div>
+        <!-- .grid_toolbar_container end -->
+    </div>
+    <!-- .grid_container end -->
+</div>
