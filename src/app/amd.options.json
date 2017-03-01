@@ -1,0 +1,22 @@
+{
+    "baseUrl": "src/app",
+    "optimize": "none",
+    "paths": {
+        "partials": "../../dist/partials",
+        "jquery": "../../vendors/jquery/dist/jquery",
+        "angular": "../../vendors/angular/angular",
+        "angular-sanitize": "../../vendors/angular-sanitize/angular-sanitize",
+        "underscore": "../../vendors/underscore/underscore",
+        "jquery-mousewheel": "../../vendors/jquery-mousewheel/jquery-mousewheel",
+        "jquery": "../../vendors/jquery/dist/jquery",
+        "jquery.scrollbar": "../../vendors/scrollbar-plugin/jQuery.mCustomScrollbar"
+    },
+    "shim": {
+        "angular": {
+            "exports": "angular"
+        },
+        "angular-sanitize": {
+            "deps": ["angular"]
+        }
+    }
+}

@@ -2,7 +2,14 @@ require.config({
     baseUrl: "/src/app/",
     paths: {
         // "jquery": "../../vendors/jquery/dist/jquery",
-        "angularAMD": "/vendors/",
+        "partials": (function(env){
+            "use strict";
+            if(env === "opitimized"){
+                return "/dist/partials";
+            }else{
+                return "empty-partials";
+            }
+        })("${env}"),
         "angular": "../../vendors/angular/angular",
         "angular-sanitize": "../../vendors/angular-sanitize/angular-sanitize",
         "underscore": "../../vendors/underscore/underscore",

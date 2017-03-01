@@ -1,0 +1,53 @@
+{
+    "webserver":{
+        "port": 8080,
+        "livereload": true,
+        "directoryListening": true,
+        "open": false
+    },
+    "env": "opitimized",
+    "source": {
+        "js": [
+            "src/app/**/*.controller.js",
+            "src/app/**/*.service.js",
+            "src/app/**/*.factory.js",
+            "src/app/**/*.provider.js",
+            "src/app/**/*.filter.js",
+            "src/app/**/*.module.js",
+            "src/app/**/*.config.js",
+            "src/app/**/*.directive.js",
+            "src/app/*.js",
+            "src/app/grid/renderers/*.js",
+            "src/app/**/*-require.js"
+        ]
+    },
+    "partials": {
+        "sources": ["./src/partials/**/*.html"],
+        "html2jsOptions": {
+            "moduleName": "ngUI.partials",
+            "prefix": "src/partials/"
+        },
+        "minifyHtmlOptions": {
+            "empty": true,
+            "spare": true,
+            "quotes": true
+        },
+        "concatName": "partials.js",
+        "destPath": "./dist"
+    },
+    "opitimize": {
+        "dest": "./dist",
+        "sourcemap": {
+            "initOptions": {
+
+            },
+            "writeOptions": {
+                "includeContent": true,
+                "debug": true
+            }
+        },
+        "uglify": {
+            "preserveComments": "license"
+        }
+    }
+}
