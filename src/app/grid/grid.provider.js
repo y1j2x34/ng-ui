@@ -21,8 +21,8 @@ define([
             getRenderersPair: function(self, names){
                 var _names =_(names);
                 var renderers = self.renderersReader;
-                var headerRenderers = renderers.get(_names.map(headerColName).value());
-                var rowRenderers = renderers.get(_names.map(rowColName).value());
+                var headerRenderers = renderers.get(_names.map(headerColName));
+                var rowRenderers = renderers.get(_names.map(rowColName));
                 return {
                     headerRenderers: headerRenderers,
                     rowRenderers: rowRenderers

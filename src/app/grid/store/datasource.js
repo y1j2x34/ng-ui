@@ -4,7 +4,7 @@ define([
 ],function(app, Class){
     "use strict";
 
-    app.factory("Datasource", DatasourceFactory);
+    app.factory("NgUIDatasource", DatasourceFactory);
 
     /* @ngInject */
     function DatasourceFactory($http){

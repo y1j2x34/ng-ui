@@ -1,15 +1,6 @@
-(function(globe, factory) {
-    "use strict";
-    if (typeof module === "object" && typeof module.exports === "object") {
-        module.exports = factory(require("../supports/Class"));
-    } else if (define && define.amd) {
-        define("subject", [
-            "../supports/Class"
-        ], factory);
-    } else {
-        globe.Subject = factory(globe.Class);
-    }
-})(this, function(Class) {
+define([
+    "supports/Class"
+],function(Class) {
     "use strict";
 
     return Class.create("Subject", {

@@ -26,6 +26,8 @@
         "require": true,
         "expect": true,
         "module": true,
-        "console": true
+        "window": true,
+        "angular": true,
+        "_": true
     }
 }

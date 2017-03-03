@@ -3,13 +3,13 @@ define([
     "angular",
     "underscore",
     "utils/random.util"
-], function(app, angular, _, RandomUtil){
+], function(app, angular, _, RandomUtil) {
     "use strict";
 
-    app.directive("uiGridCell", uiGridCellDirective);
+    app.directive("uiGridRowCell", uiGridCellDirective);
 
     /* @ngInject */
-    function uiGridCellDirective($compile, $window){
+    function uiGridCellDirective($compile, $window) {
         var jqWindow = angular.element($window);
         var directive = {
             restrict: "A",
@@ -25,25 +25,29 @@ define([
             var $column = scope.$column;
             scope.$header = $column.def;
             var $rowdata = scope.$rowdata;
-            _($column.renderers)
-                .filter(_.isFunction)
-                .each(function(render) {
-                    render(element, $column, $rowdata);
-                });
+            _(
+                _($column.renderers)
+                .map(function(item) {
+                    return item.renderer;
+                })
+            ).each(function(render) {
+                render(element, $column, $rowdata);
+            });
             $compile(element.contents())(scope);
         }
-        function gridCellPostLink(scope, element){
+
+        function gridCellPostLink(scope, element) {
             var $column = scope.$column;
             // var header = $column.def;
             var columnIndex = $column.columnIndex;
             var $rowIndex = scope.$rowIndex;
 
-            if($rowIndex === 0){
+            if ($rowIndex === 0) {
                 autoAdjustWidth(scope, element, columnIndex);
             }
         }
 
-        function autoAdjustWidth(scope, element, columnIndex){
+        function autoAdjustWidth(scope, element, columnIndex) {
             var $header = element.closest(".grid_container").find(".grid_header table>thead>tr>th").eq(columnIndex);
             var resizeEventId = RandomUtil.unique("resize.");
 
@@ -61,7 +65,8 @@ define([
                 var columnWidth = $header.outerWidth();
                 setElementWidth(element, columnWidth);
             }
-            function setElementWidth(element, width){
+
+            function setElementWidth(element, width) {
                 element.css({
                     "max-width": width,
                     "width": width,

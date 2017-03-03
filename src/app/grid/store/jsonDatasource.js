@@ -5,11 +5,11 @@ define([
 ], function(app, Class){
     "use strict";
 
-    app.factory("JSONDatasource", JSONDatasourceFactory);
+    app.factory("NgUIJSONDatasource", JSONDatasourceFactory);
 
     /* @ngInject */
-    function JSONDatasourceFactory($q, Datasource){
-        return Class.extend(Datasource, {
+    function JSONDatasourceFactory($q, NgUIDatasource){
+        return Class.extend(NgUIDatasource, {
             name: "JSONDatasource",
             init: function(self, data){
                 self.data = data;

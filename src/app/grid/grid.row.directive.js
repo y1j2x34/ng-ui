@@ -17,7 +17,7 @@ define([
         return directive;
 
         function postLink($scope, element, attr, grid) {
-            $scope.rowCtrl.__init__($scope.$rowdata, grid);
+            // $scope.rowCtrl.__init__($scope.$rowdata, grid);
             element.find(">*").click(function(e) {
                 e.stopPropagation();
             });

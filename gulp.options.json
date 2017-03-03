@@ -37,6 +37,7 @@
     },
     "opitimize": {
         "dest": "./dist",
+        "useStrict": true,
         "sourcemap": {
             "initOptions": {
 

@@ -51,7 +51,7 @@ define([
             }
             options = _.extend({}, DEFAULT_OPTIONS, options);
             if (!options.store) {
-                throw new Error("store");
+                throw new Error("store is required");
             }
 
             var defaults = options.defaults || {};
@@ -92,6 +92,12 @@ define([
             });
             store.on(LOAD_COMPLETE_EVENT, function() {
                 self.loadStatus = "complete";
+            });
+            store
+            .fetchLoaded()
+            .then(function(result){
+                self.loadStatus = "success";
+                onLoadSuccess(self, result.result, result.data, result.params);
             });
         }
 

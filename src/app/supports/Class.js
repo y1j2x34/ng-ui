@@ -13,7 +13,7 @@
         globe.Class = factory();
     }
 })(this, function() {
-    "use strict";
+    // jshint strict:false
 
     var constructorFactoryCache = {};
 
@@ -24,7 +24,7 @@
     Class.singleton = singleton;
 
     function singleton(){
-        var Cls = createClass.call(null, arguments);
+        var Cls = createClass.apply(null, arguments);
         return new Cls();
     }
 

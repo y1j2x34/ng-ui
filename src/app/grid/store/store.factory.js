@@ -2,7 +2,10 @@ define([
     "../grid.module",
     "underscore",
     "supports/Class",
-    "event/subject"
+    "event/subject",
+    "./datasource",
+    "./jsonDatasource",
+    "./store.provider"
 ], function(app, _, Class, Subject) {
     "use strict";
 
@@ -32,7 +35,8 @@ define([
             reload: reload,
             load: load,
             setCollation: setCollation,
-            unsetCollation: unsetCollation
+            unsetCollation: unsetCollation,
+            fetchLoaded: fetchLoaded
         });
 
         /**
@@ -80,6 +84,9 @@ define([
                 return self.load(self.lastParams);
             }
         }
+        function fetchLoaded(self){
+            return self.$$lastLoadPromise || $q.reject("unloaded");
+        }
         /**
          * 加载数据
          * @param  {Object} params 加载参数
@@ -121,6 +128,11 @@ define([
 
                 self.trigger(LOAD_SUCCESS_EVENT, result, data, params);
                 self.trigger(LOAD_COMPLETE_EVENT, result, data, params);
+                return {
+                    result: result,
+                    data: data,
+                    params: params
+                };
             }
             function loadError(reason) {
                 var lastLoadPromise = self.$$lastLoadPromise;

@@ -1,9 +1,8 @@
 define([
-    "angular",
     "grid/grid-require",
     "validation/validation-require",
     "partials"
-], function(angular, uiGridModuleName, validationModuleName){
+], function(uiGridModuleName, validationModuleName){
     "use strict";
     var deps = [
         "ng",
@@ -11,5 +10,5 @@ define([
         uiGridModuleName,
         validationModuleName
     ];
-    return angular.module("ng-ui", deps);
+    return angular.module("ngUI", deps);
 });

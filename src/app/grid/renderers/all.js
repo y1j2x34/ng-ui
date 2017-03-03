@@ -1,6 +1,6 @@
 define([
-    "underscore"
-], function(_){
+    "./value.renderer"
+], function(){
     "use strict";
-    return _.slice(arguments);
+    return _(arguments).slice();
 });

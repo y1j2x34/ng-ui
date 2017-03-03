@@ -4,15 +4,19 @@
         <meta charset="utf-8">
         <title>测试</title>
         <link rel="stylesheet" href="/vendors/bootstrap/dist/css/bootstrap.css">
+        <link rel="stylesheet" href="/vendors/scrollbar-plugin/jquery.mCustomScrollbar.css">
     </head>
-    <body>
+    <body ng-controller="HelloController as self">
         <div class="container">
             <div class="row">
                 <div class="col-xs-12">
+                    <span ng-bind="hello.word"></span>
+                    <div ui-grid="self.gridOptions">
 
+                    </div>
                 </div>
             </div>
         </div>
-        <script src="/vendors/requirejs/require.js" data-main="/src/app/main" async defer charset="utf-8"></script>
+        <script src="/vendors/requirejs/require.js" data-main="/demo/test" async defer charset="utf-8"></script>
     </body>
 </html>

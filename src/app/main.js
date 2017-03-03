@@ -1,21 +1,21 @@
 require.config({
-    baseUrl: "/src/app/",
+    baseUrl: "/src/app",
     paths: {
-        // "jquery": "../../vendors/jquery/dist/jquery",
-        "partials": (function(env){
+        "partials": (function(env) {
             "use strict";
-            if(env === "opitimized"){
+            if (env === "opitimized") {
                 return "/dist/partials";
-            }else{
+            } else {
                 return "empty-partials";
             }
         })("${env}"),
-        "angular": "../../vendors/angular/angular",
-        "angular-sanitize": "../../vendors/angular-sanitize/angular-sanitize",
-        "underscore": "../../vendors/underscore/underscore",
-        "jquery-mousewheel": "../../vendors/jquery-mousewheel/jquery-mousewheel",
-        "jquery": "../../vendors/jquery/dist/jquery",
-        "jquery.scrollbar": "../../vendors/scrollbar-plugin/jQuery.mCustomScrollbar"
+        "angular": "/vendors/angular/angular",
+        "angular-sanitize": "/vendors/angular-sanitize/angular-sanitize",
+        "underscore": "/vendors/underscore/underscore",
+        "jquery-mousewheel": "/vendors/jquery-mousewheel/jquery-mousewheel",
+        "jquery": "/vendors/jquery/dist/jquery",
+        "jquery.scrollbar": "/vendors/scrollbar-plugin/jQuery.mCustomScrollbar",
+        "angularAMD": "/"
     },
     shim: {
         "angular": {
@@ -24,11 +24,11 @@ require.config({
         "underscore": {
             exports: "_"
         },
-        "angular-sanitize": {
-            deps: ["angular"]
-        }
+        "angular-sanitize": ["angular"]
     }
 });
-require([
-    "app.module"
-]);
+define(["app", "jquery"], function(app, jQuery){
+    "use strict";
+    jQuery.noConflict();
+    return app;
+});

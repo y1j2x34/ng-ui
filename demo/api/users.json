@@ -1,0 +1,26 @@
+{
+    "page": 1,
+    "pageSize": 15,
+    "total": 100,
+    "data":[{
+        "userId": 15982,
+        "userName": "root",
+        "company": "呵呵",
+        "age": 15
+    },{
+        "userId": 15952,
+        "userName": "administrator",
+        "company": "哈哈哈",
+        "age": 25
+    },{
+        "userId": 15552,
+        "userName": "ding",
+        "company": "hihihihi",
+        "age": 24
+    },{
+        "userId": 15952,
+        "userName": "admin",
+        "company": "恍恍惚惚",
+        "age": 23
+    }]
+}

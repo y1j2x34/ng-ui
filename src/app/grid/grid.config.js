@@ -1,14 +1,16 @@
 define([
     "./grid.module",
-    "./grid.provider"
-], function(app){
+    "./renderers/all",
+    "./grid.provider",
+], function(app, allRenderers){
     "use strict";
 
     app.config(configure);
 
     /* @ngInject */
     function configure($gridProvider){
-
-        $gridProvider.registRenderer();
+        _.each(allRenderers, function(renderer){
+            $gridProvider.registRenderer(renderer.name, renderer.header, renderer.row, false);
+        });
     }
 });

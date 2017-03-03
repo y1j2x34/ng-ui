@@ -29,12 +29,17 @@ define([
         return directive;
 
         function gridPreLink(scope, element, attrs, grid) {
-            var theme = attrs.theme || $grid.theme;
-            grid.$templateUrl = "src/partials/" + theme + "/ui-grid.html";
+            var theme = attrs.theme || $grid.theme || "bootstrap";
+            grid.$templateUrl = "/src/partials/grid/" + theme + "/ui-grid.html";
         }
 
         function gridPostLink(scope, element, attrs, grid) {
-            grid.activate(grid.options);
+            var cancelWatchOption = scope.$watch("grid.options", function(options){
+                if(options){
+                    cancelWatchOption();
+                    grid.activate(options);
+                }
+            });
 
             scope.$on("$destroy", function() {
                 grid.destroy();
