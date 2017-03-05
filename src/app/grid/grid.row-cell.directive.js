@@ -26,12 +26,12 @@ define([
             scope.$header = $column.def;
             var $rowdata = scope.$rowdata;
             _(
-                _($column.renderers)
-                .map(function(item) {
-                    return item.renderer;
+                _.filter($column.renderers, function(renderer){
+                    return _.isFunction(renderer.renderer);
                 })
-            ).each(function(render) {
-                render(element, $column, $rowdata);
+            ).each(function(renderer){
+                element.addClass("ui_grid_row_rendered--" + renderer.name);
+                renderer.renderer(element, $column, $rowdata);
             });
             $compile(element.contents())(scope);
         }

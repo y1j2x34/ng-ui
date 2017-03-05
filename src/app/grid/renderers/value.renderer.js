@@ -1,15 +1,15 @@
 define([
-    "angular",
-    "underscore"
-], function(angular, _) {
+    "jquery",
+    "var/noop"
+], function($, noop) {
     "use strict";
     return {
         name: "value",
         priority: 0,
-        header: _.noop,
+        header: noop,
         row: function(td) {
             td.addClass("grid_value");
-            var $value = angular.element("<span>");
+            var $value = $("<span>");
             $value.attr("ng-bind", "$rowdata[$column.def.field]");
             td.append($value);
         }

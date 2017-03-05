@@ -10,28 +10,20 @@ define([
     app.directive("uiGrid", gridDirective);
 
     /* @ngInject */
-    function gridDirective($grid) {
+    function gridDirective() {
         var directive = {
             restrict: "A",
-            template: "<div ng-include='grid.$templateUrl' >",
+            templateUrl: "{themed}/grid/ui-grid.html",
             replace: true,
+            scope: false,
             controller: "UIGridController",
             controllerAs: "grid",
             bindToController: {
-                "options": "=uiGrid",
-                "theme": "@?theme"
+                "options": "=uiGrid"
             },
-            link: {
-                pre: gridPreLink,
-                post: gridPostLink
-            }
+            link: gridPostLink
         };
         return directive;
-
-        function gridPreLink(scope, element, attrs, grid) {
-            var theme = attrs.theme || $grid.theme || "bootstrap";
-            grid.$templateUrl = "/src/partials/grid/" + theme + "/ui-grid.html";
-        }
 
         function gridPostLink(scope, element, attrs, grid) {
             var cancelWatchOption = scope.$watch("grid.options", function(options){

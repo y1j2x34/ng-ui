@@ -4,7 +4,7 @@ define([
 ], function(app, _) {
     "use strict";
 
-    app.directive("uiHeadGridCell", gridHeadCellDirective);
+    app.directive("uiGridHeadCell", gridHeadCellDirective);
 
     /* @ngInject */
     function gridHeadCellDirective($compile, $timeout) {
@@ -19,11 +19,14 @@ define([
 
         function preLink(scope, element, attrs, grid) {
             var header = scope.header;
-            _(header.renderers)
-                .filter(_.isFunction)
-                .each(function(render) {
-                    render(element, header.def, grid);
-                });
+            _(
+                _.filter(header.renderers, function(render) {
+                    return _.isFunction(render.renderer);
+                })
+            ).each(function(render) {
+                render.renderer(element, header.def, grid);
+                element.addClass("ui_grid_head_rendered--" + render.name);
+            });
 
             $compile(element.contents())(scope);
 

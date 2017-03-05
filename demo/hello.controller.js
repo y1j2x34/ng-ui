@@ -18,9 +18,16 @@ define([
                     title: "用户ID",
                     field: "userId"
                 },{
-                    filed: "userName",
+                    field: "userName",
                     title: "用户名"
                 }],
+                ext: {
+                    accordion: {
+                        enabled: true,
+                        templateUrl: "/demo/partials/demo-collapsible-tpl.html",
+                        oneAtTime: true
+                    }
+                },
                 store: store
             };
             store.load();

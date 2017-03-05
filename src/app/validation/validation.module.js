@@ -1,6 +1,7 @@
 define([
-    "angular"
-],function(angular){
+    "angular",
+    "../themed/themed-require"
+],function(angular, themedModuleName){
     "use strict";
-    return angular.module("ngUI.validation", []);
+    return angular.module("ngUI.validation", [themedModuleName]);
 });

@@ -27,6 +27,11 @@ require.config({
         "angular-sanitize": ["angular"]
     }
 });
+require([
+    "angular",
+    "underscore",
+    "jquery"
+]);
 define(["app", "jquery"], function(app, jQuery){
     "use strict";
     jQuery.noConflict();

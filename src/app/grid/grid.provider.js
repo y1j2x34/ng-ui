@@ -34,8 +34,8 @@ define([
                 var rowRenderer = self.renderersReader.get(namePair.rowName);
 
                 return {
-                    header: headerRenderer,
-                    row: rowRenderer
+                    headerRenderer: headerRenderer,
+                    rowRenderer: rowRenderer
                 };
             },
             hasRenderer: function(self, name, isExtention){
@@ -81,10 +81,10 @@ define([
         }
 
         function headerColName(name){
-            return "header.col." + name;
+            return "header.cell." + name;
         }
         function rowColName(name){
-            return "row.col." + name;
+            return "row.cell." + name;
         }
     }
 });

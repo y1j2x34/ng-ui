@@ -1,6 +1,8 @@
 define([
-    "./value.renderer"
+    "./value.renderer",
+    "./title.renderer",
+    "./accordion.renderer"
 ], function(){
     "use strict";
-    return _(arguments).slice();
+    return Array.prototype.slice.call(arguments);
 });

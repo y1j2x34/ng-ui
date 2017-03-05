@@ -3,13 +3,13 @@ define([
 ],function(Class){
     "use strict";
 
-    var OPTIONS_TEXT = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    var OPTIONS_HEX_TEXT = "0123456789abcdefg";
+    var CHARACTERS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    var HEX_CHARACTERS = "0123456789abcdefg";
     var counter = new Date().getTime();
     return Class.create({
         statics: {
             randomString: function(size){
-                return randomString(size, OPTIONS_TEXT);
+                return randomString(size, CHARACTERS);
             },
             unique: function(prefix){
                 return prefix + (counter++).toString(16);
@@ -19,7 +19,7 @@ define([
     });
 
     function randomHex(size){
-        return randomString(size, OPTIONS_HEX_TEXT);
+        return randomString(size, HEX_CHARACTERS);
     }
 
     function randomString(size, optionsText){
