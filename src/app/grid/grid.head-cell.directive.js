@@ -21,11 +21,11 @@ define([
             var header = scope.header;
             _(
                 _.filter(header.renderers, function(render) {
-                    return _.isFunction(render.renderer);
+                    return _.isFunction(render.render);
                 })
-            ).each(function(render) {
-                render.renderer(element, header.def, grid);
-                element.addClass("ui_grid_head_rendered--" + render.name);
+            ).each(function(renderer) {
+                renderer.render(element, header.def, grid);
+                element.addClass("ui_grid_head_rendered--" + renderer.name);
             });
 
             $compile(element.contents())(scope);

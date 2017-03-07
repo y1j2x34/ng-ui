@@ -27,11 +27,11 @@ define([
             var $rowdata = scope.$rowdata;
             _(
                 _.filter($column.renderers, function(renderer){
-                    return _.isFunction(renderer.renderer);
+                    return _.isFunction(renderer.render);
                 })
             ).each(function(renderer){
                 element.addClass("ui_grid_row_rendered--" + renderer.name);
-                renderer.renderer(element, $column, $rowdata);
+                renderer.render(element, $column, $rowdata);
             });
             $compile(element.contents())(scope);
         }

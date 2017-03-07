@@ -4,8 +4,9 @@ define([
     "utils/random.util",
     "supports/Class",
     "event/subject",
+    "var/noop",
     "./store/store.factory"
-], function(app, _, RandomUtil, Class, Subject) {
+], function(app, _, RandomUtil, Class, Subject, noop) {
     "use strict";
 
     app.factory("UIGrid", gridFactory);
@@ -80,13 +81,15 @@ define([
 
             resolveColumn(self.headers, self.columns, options.columns, defaults);
 
+            // resolveRowRenderers(options.rows);
+
             var store = self.store;
             store.on(BEFORE_LOAD_EVENT, function(event, params) {
                 params.page = self.page;
                 params.pageSize = self.pageSize;
                 self.loadStatus = "loading";
             });
-            store.on(LOAD_SUCCESS_EVENT, function(event, response, data, params){
+            store.on(LOAD_SUCCESS_EVENT, function(event, response, data, params) {
                 self.loadStatus = "success";
                 onLoadSuccess(self, response, data, params);
             });
@@ -94,25 +97,50 @@ define([
                 self.loadStatus = "complete";
             });
             store
-            .fetchLoaded()
-            .then(function(result){
-                self.loadStatus = "success";
-                onLoadSuccess(self, result.result, result.data, result.params);
-            });
+                .fetchLoaded()
+                .then(function(result) {
+                    self.loadStatus = "success";
+                    onLoadSuccess(self, result.result, result.data, result.params);
+                });
         }
 
         function resolveColumn(resolvedHeaders, resolvedColumns, columns, defaults) {
             _.each(columns, function(columnDef) {
                 _.defaults(columnDef, defaults);
-
                 columnDef.value = CONSTT_VALUE;
-                var renderersPair = $grid.getRenderersPair(_.keys(columnDef));
+
+                var keys = _.keys(columnDef);
+
+                var headerRenderers = [];
+                var rowRenderers = [];
+
+                _.each(
+                    keys,
+                    function(name) {
+                        var renderersDef = $grid.getCellRenderer(name, false);
+                        if (renderersDef) {
+                            if(_.isFunction(renderersDef.init)){
+                                renderersDef.init(columnDef);
+                            }
+                            rowRenderers.push({
+                                name: renderersDef.name,
+                                priority: renderersDef.priority,
+                                render: renderersDef.row || noop
+                            });
+                            headerRenderers.push({
+                                name: renderersDef.name,
+                                priority: renderersDef.priority,
+                                render: renderersDef.header || noop
+                            });
+                        }
+                    }
+                );
                 resolvedHeaders.push({
-                    renderers: renderersPair.headerRenderers,
+                    renderers: headerRenderers,
                     def: columnDef
                 });
                 resolvedColumns.push({
-                    renderers: renderersPair.rowRenderers,
+                    renderers: rowRenderers,
                     def: columnDef
                 });
             });
@@ -124,22 +152,23 @@ define([
                     return;
                 }
 
-                if (!$grid.hasRenderer(attr, true)) {
+                if (!$grid.hasCellRenderer(attr, true)) {
                     return;
                 }
 
-                var rendererPair = $grid.getExtentionRendererPair(attr, true);
+                var rendererDef = $grid.getCellRenderer(attr, true);
 
-                var rowRenderer = rendererPair.rowRenderer;
-                var headerRenderer = rendererPair.headerRenderer;
+                if(_.isFunction(rendererDef.init)){
+                    rendererDef.init(def);
+                }
 
                 resolvedHeaders.push({
-                    renderers: [headerRenderer],
+                    renderers: [rendererDef.row || noop],
                     def: def
                 });
 
                 resolvedColumns.push({
-                    renderers: [rowRenderer],
+                    renderers: [rendererDef.header || noop],
                     def: def
                 });
             });
@@ -185,9 +214,9 @@ define([
          * 销毁
          * @return {[type]}
          */
-        function destroy(self){
+        function destroy(self) {
             self.store.off(BEFORE_LOAD_EVENT);
-            self.store.off(LOAD_SUCCESS_EVENT );
+            self.store.off(LOAD_SUCCESS_EVENT);
             self.store.off(LOAD_ERROR_EVENT);
             self.store.off(LOAD_COMPLETE_EVENT);
         }

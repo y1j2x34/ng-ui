@@ -3,88 +3,74 @@ define([
     "underscore",
     "utils/registable",
     "supports/Class"
-], function(app, _, Registable, Class){
+], function(app, _, Registable, Class) {
     "use strict";
 
     app.provider("$grid", GridProvider);
 
     /*  @ngInject */
-    function GridProvider(){
+    function GridProvider() {
         var renderers = new Registable();
 
         var renderersWriter = renderers.writer();
 
         var $grid = Class.singleton({
-            init: function(self){
+            init: function(self) {
                 self.renderersReader = renderers.reader();
             },
-            getRenderersPair: function(self, names){
-                var _names =_(names);
-                var renderers = self.renderersReader;
-                var headerRenderers = renderers.get(_names.map(headerColName));
-                var rowRenderers = renderers.get(_names.map(rowColName));
-                return {
-                    headerRenderers: headerRenderers,
-                    rowRenderers: rowRenderers
-                };
+            getRowRenderer: function(self, name) {
+                var rendererName = rowName(name);
+                return self.renderersReader.get(rendererName);
             },
-            getExtentionRendererPair: function(self, name){
-                var namePair = makeName(name, true);
-                var headerRenderer = self.renderersReader.get(namePair.headerName);
-                var rowRenderer = self.renderersReader.get(namePair.rowName);
+            hasRowRenderer: function(self, name) {
+                var rendererName = rowName(name);
+                return self.renderersReader.has(rendererName);
+            },
+            getCellRenderer: function(self, name, isExtention){
+                var registName = registNameOf(isExtention ? "ext": "cell", name);
+                return self.renderersReader.get(registName);
 
-                return {
-                    headerRenderer: headerRenderer,
-                    rowRenderer: rowRenderer
-                };
             },
-            hasRenderer: function(self, name, isExtention){
-                var namePair = makeName(name, isExtention);
-                var hasHeaderRenderer = self.renderersReader.has(namePair.headerName);
-                var hasRowRenderer = self.renderersReader.has(namePair.rowName);
-                return hasHeaderRenderer || hasRowRenderer;
+            hasCellRenderer: function(self, name, isExtention) {
+                var registName = registNameOf(isExtention ? "ext": "cell", name);
+                return self.renderersReader.has(registName);
             }
         });
 
         this.registRenderer = registRenderer;
 
-        function registRenderer(name, headerRenderer, rowRenderer, isExtention){
-            var namePair = makeName(name, isExtention);
-            renderersWriter.regist(namePair.headerName, {
-                name: name,
-                renderer: headerRenderer
-            });
-            renderersWriter.regist(namePair.rowName, {
-                name: name,
-                renderer: rowRenderer
-            });
+        function registRenderer(name, renderer, type) {
+            var registName = registNameOf(type, name);
+            renderersWriter.regist(registName, renderer);
         }
 
         this.$get = function() {
             return $grid;
         };
 
-        function makeName(name, isExtention){
-            var headerName, rowName;
-
-            if(isExtention){
-                headerName = "header.ext." + name;
-                rowName = "row.ext." + name;
-            }else{
-                headerName = headerColName(name);
-                rowName = rowColName(name);
+        function registNameOf(type, name){
+            switch(type){
+                case "cell":
+                return cellName(name);
+                case "row":
+                return rowName(name);
+                case "ext":
+                return extName(name);
+                default:
+                throw new Error("invalid regist type: " + type);
             }
-            return {
-                headerName: headerName,
-                rowName: rowName
-            };
         }
 
-        function headerColName(name){
-            return "header.cell." + name;
+        function cellName(name) {
+            return "cell." + name;
         }
-        function rowColName(name){
-            return "row.cell." + name;
+
+        function extName(name) {
+            return "ext." + name;
+        }
+
+        function rowName(name) {
+            return "row." + name;
         }
     }
 });
