@@ -21,7 +21,7 @@ define([
         };
         return directive;
 
-        function gridCellPreLink(scope, element) {
+        function gridCellPreLink(scope, element, attrs, grid) {
             var $column = scope.$column;
             scope.$header = $column.def;
             var $rowdata = scope.$rowdata;
@@ -30,8 +30,14 @@ define([
                     return _.isFunction(renderer.render);
                 })
             ).each(function(renderer){
-                element.addClass("ui_grid_row_rendered--" + renderer.name);
-                renderer.render(element, $column, $rowdata);
+                element.addClass("ui_grid_cell_rendered--" + renderer.name);
+                renderer.render({
+                    element: element,
+                    value: renderer.def,
+                    rowdata: $rowdata,
+                    column: $column,
+                    grid: grid
+                });
             });
             $compile(element.contents())(scope);
         }

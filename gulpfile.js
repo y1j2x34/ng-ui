@@ -76,7 +76,7 @@ function opitimizejsTask() {
 
     var gulppipe =
 		gulp
-        .src("src/app/main.js")
+        .src("src/app/ng-ui-app.js")
         .pipe(sourcemap.init(opitimizeOptions.sourcemap.initOptions))
         .pipe(requirejsOptimize(amdOptions))
         .pipe(concat("ng-ui.js"))

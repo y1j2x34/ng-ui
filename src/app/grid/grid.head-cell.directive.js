@@ -24,8 +24,14 @@ define([
                     return _.isFunction(render.render);
                 })
             ).each(function(renderer) {
-                renderer.render(element, header.def, grid);
                 element.addClass("ui_grid_head_rendered--" + renderer.name);
+                // renderer.render(element, renderer.def, header.def, grid);
+                renderer.render({
+                    element: element,
+                    value: renderer.def,
+                    column: header.def,
+                    grid: grid
+                });
             });
 
             $compile(element.contents())(scope);

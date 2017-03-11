@@ -4,13 +4,14 @@ define([
 ], function($, noop){
     "use strict";
     return {
+        type: "cell",
         name:"title",
         priority: 0,
-        header: function(th, column){
+        header: function(options){
             var $cont = $("<span>");
             $cont.addClass("grid_title");
-            $cont.text(column.title || "");
-            th.prepend($cont);
+            $cont.text(options.value);
+            options.element.prepend($cont);
         },
         row: noop
     };

@@ -4,14 +4,16 @@ define([
 ], function($, noop) {
     "use strict";
     return {
+        type: "cell",
         name: "value",
         priority: 0,
         header: noop,
-        row: function(td) {
-            td.addClass("grid_value");
+        row: function(options) {
+            var element = options.element;
+            element.addClass("grid_value");
             var $value = $("<span>");
             $value.attr("ng-bind", "$rowdata[$column.def.field]");
-            td.append($value);
+            element.append($value);
         }
     };
 });

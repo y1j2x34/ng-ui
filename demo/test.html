@@ -16,6 +16,43 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-xs-6">
+                    <form class="form form-horizontal" action="index.html" method="post">
+                        <div class="form-body">
+                            <div class="form-group">
+                                <label class="col-xs-3 control-label">数字组件：</label>
+                                <div class="col-xs-4">
+                                    <input type="integer"
+                                        class="form-control"
+                                        ui-number
+                                        name="integerNumber"
+                                        ng-min="0"
+                                        ng-max="100"
+                                        step="1"
+                                        ng-model="self.integerNumber"
+                                        ng-model-options="{updateOn:'blur'}"
+                                        placeholder="整数(0,100,1)">
+                                    <div ng-bind="self.integerNumber"> </div>
+                                </div>
+                                <div class="col-xs-4">
+                                    <input
+                                    type="float"
+                                    class="form-control"
+                                    ui-number
+                                    name="floatNumber"
+                                    ng-min="0"
+                                    ng-max="1"
+                                    step="0.01"
+                                    ng-model="self.floatNumber"
+                                    placeholder="小数(0,1,0.01)">
+                                    <div ng-bind="self.floatNumber"> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
         <script src="/vendors/requirejs/require.js" data-main="/demo/test" async defer charset="utf-8"></script>
     </body>

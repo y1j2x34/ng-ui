@@ -2,7 +2,8 @@ define([
     "angular",
     "widgets/widgets-require",
     "angular-sanitize",
-    "underscore"
+    "underscore",
+    "jquery"
 ], function(angular, widgetModuleName){
     "use strict";
     return angular.module("ngUI.grid", [

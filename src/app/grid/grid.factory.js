@@ -76,12 +76,16 @@ define([
             }
             self.headers = [];
             self.columns = [];
+            self.rows = [];
 
             resolveExtention(self.headers, self.columns, options.ext);
 
             resolveColumn(self.headers, self.columns, options.columns, defaults);
 
-            // resolveRowRenderers(options.rows);
+            setColumnIndex(self.headers);
+            setColumnIndex(self.columns);
+
+            resolveRowRenderers(self.rows, options.rows);
 
             var store = self.store;
             store.on(BEFORE_LOAD_EVENT, function(event, params) {
@@ -117,17 +121,23 @@ define([
                 _.each(
                     keys,
                     function(name) {
+                        var def = columnDef[name];
+                        if (!isEnabledDef(def)) {
+                            return;
+                        }
                         var renderersDef = $grid.getCellRenderer(name, false);
                         if (renderersDef) {
-                            if(_.isFunction(renderersDef.init)){
+                            if (_.isFunction(renderersDef.init)) {
                                 renderersDef.init(columnDef);
                             }
                             rowRenderers.push({
+                                def: def,
                                 name: renderersDef.name,
                                 priority: renderersDef.priority,
                                 render: renderersDef.row || noop
                             });
                             headerRenderers.push({
+                                def: def,
                                 name: renderersDef.name,
                                 priority: renderersDef.priority,
                                 render: renderersDef.header || noop
@@ -135,6 +145,9 @@ define([
                         }
                     }
                 );
+                rowRenderers = _.sortBy(rowRenderers, orderByPriority);
+                headerRenderers = _.sortBy(headerRenderers, orderByPriority);
+
                 resolvedHeaders.push({
                     renderers: headerRenderers,
                     def: columnDef
@@ -148,7 +161,7 @@ define([
 
         function resolveExtention(resolvedHeaders, resolvedColumns, ext) {
             _.each(ext, function(def, attr) {
-                if (def === undefined || def === "none" || def === false) {
+                if (!isEnabledDef(def)) {
                     return;
                 }
 
@@ -158,20 +171,71 @@ define([
 
                 var rendererDef = $grid.getCellRenderer(attr, true);
 
-                if(_.isFunction(rendererDef.init)){
-                    rendererDef.init(def);
+                if (_.isFunction(rendererDef.init)) {
+                    def = rendererDef.init(def) || def;
                 }
 
                 resolvedHeaders.push({
-                    renderers: [rendererDef.row || noop],
+                    priority: rendererDef.priority,
+                    renderers: [{
+                        name: rendererDef.name,
+                        priority: rendererDef.priority,
+                        render: rendererDef.header || noop
+                    }],
                     def: def
                 });
 
                 resolvedColumns.push({
-                    renderers: [rendererDef.header || noop],
+                    priority: rendererDef.priority,
+                    renderers: [{
+                        name: rendererDef.name,
+                        priority: rendererDef.priority,
+                        render: rendererDef.row || noop
+                    }],
                     def: def
                 });
             });
+        }
+
+        function resolveRowRenderers(rowRenderersHolder, rows) {
+            _.each(rows, function(def, name) {
+                if (!isEnabledDef(def)) {
+                    return;
+                }
+
+                if (!$grid.hasRowRenderer(name)) {
+                    return;
+                }
+
+                var rendererDef = $grid.getRowRenderer(name);
+
+                if (_.isFunction(rendererDef.init)) {
+                    rendererDef.init(def);
+                }
+
+                rowRenderersHolder.push({
+                    priority: rendererDef.priority,
+                    render: rendererDef.render,
+                    def: def
+                });
+            });
+            _.sortBy(rowRenderersHolder, orderByPriority);
+        }
+        function setColumnIndex(columns){
+            _.each(columns, function(column, index){
+                column.columnIndex = index;
+            });
+        }
+        function isEnabledDef(def) {
+            return !(def === undefined ||
+                def === "none" ||
+                def === false ||
+                def === null ||
+                def.enabled === false);
+        }
+
+        function orderByPriority(renderer) {
+            return renderer.priority;
         }
         /**
          * 请求指定页码数据

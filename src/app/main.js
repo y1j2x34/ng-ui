@@ -3,7 +3,7 @@ require.config({
     paths: {
         "partials": (function(env) {
             "use strict";
-            if (env === "opitimized") {
+            if (env === "optimized") {
                 return "/dist/partials";
             } else {
                 return "empty-partials";
@@ -14,8 +14,7 @@ require.config({
         "underscore": "/vendors/underscore/underscore",
         "jquery-mousewheel": "/vendors/jquery-mousewheel/jquery-mousewheel",
         "jquery": "/vendors/jquery/dist/jquery",
-        "jquery.scrollbar": "/vendors/scrollbar-plugin/jQuery.mCustomScrollbar",
-        "angularAMD": "/"
+        "jquery.scrollbar": "/vendors/scrollbar-plugin/jQuery.mCustomScrollbar"
     },
     shim: {
         "angular": {
@@ -27,13 +26,12 @@ require.config({
         "angular-sanitize": ["angular"]
     }
 });
-require([
-    "angular",
-    "underscore",
+// require(["./ng-ui-app"]);
+define([
+    "./app.module",
+    "./init/themed.config",
     "jquery"
-]);
-define(["app", "jquery"], function(app, jQuery){
+], function(app){
     "use strict";
-    jQuery.noConflict();
     return app;
 });

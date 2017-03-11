@@ -9,10 +9,10 @@
                 </thead>
             </table>
         </div>
-        <div class="grid_body" ui-scrollbar="{'live':'on','theme':'minimal-dark','callbacks':grid.scrollbarCallbacks}" box-height="{{grid.gridHeight}}">
+        <div class="grid_body" ui-scrollbar="grid.gridBodyScrollbarOptions" box-height="{{grid.gridHeight}}">
             <table class="table table-hover table-bordered">
                 <tbody>
-                    <tr ui-grid-row ng-repeat="$rowdata in grid.grid.data" ng-init="$rowIndex = $index" ng-class="{'even': ($index+1) % 2 === 0}" class="grid_row" data-index="{{$index}}">
+                    <tr ui-grid-row ng-repeat="$rowdata in grid.grid.data" ng-init="$rowIndex = $index" class="grid_row" data-index="{{$index}}">
                         <td ng-repeat="$column in grid.grid.columns" ui-grid-row-cell></td>
                     </tr>
                 </tbody>

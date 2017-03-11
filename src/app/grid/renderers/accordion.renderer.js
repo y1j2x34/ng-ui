@@ -4,11 +4,11 @@ define([
     "use strict";
 
     return {
-        ext: true,
+        type: "ext",
         name: "accordion",
         header: function(){},
-        row: function(td){
-            td.append("<a ui-grid-accordion>");
+        row: function(options){
+            options.element.append("<a ui-grid-accordion>");
         }
     };
 });

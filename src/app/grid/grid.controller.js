@@ -15,9 +15,15 @@ define([
         self.changePageSize = changePageSize;
         self.activate = activate;
         self.destroy = destroy;
+        self.getRowRenderers = getRowRenderers;
 
         function activate(options) {
             self.grid = new UIGrid(options);
+            self.gridBodyScrollbarOptions = {
+                'live':'on',
+                'theme':'minimal-dark'
+                // 'callbacks':self.scrollbarCallbacks
+            };
         }
 
         function destroy(){
@@ -44,6 +50,10 @@ define([
             } else {
                 self.store.load();
             }
+        }
+
+        function getRowRenderers(){
+            return self.grid.rows;
         }
     }
 });

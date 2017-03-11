@@ -12,7 +12,7 @@ define([
                 return randomString(size, CHARACTERS);
             },
             unique: function(prefix){
-                return prefix + (counter++).toString(16);
+                return (prefix || "") + (counter++).toString(16);
             },
             randomHex: randomHex
         }

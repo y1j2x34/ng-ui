@@ -23,7 +23,12 @@ define([
                 },{
                     field: "userName",
                     title: "用户名",
-                    align: "left"
+                    align: "left",
+                    editable: {
+                        enabled: true,
+                        tip: "修改用户名",
+                        type: "string"
+                    }
                 }],
                 ext: {
                     accordion: {

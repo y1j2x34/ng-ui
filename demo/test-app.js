@@ -1,6 +1,6 @@
 define([
     "angular",
-    "ngUI"
+    "ng-ui-app"
 ], function(angular){
     "use strict";
     return angular.module("test", ["ngUI"]);
