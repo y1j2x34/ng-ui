@@ -1,7 +1,9 @@
 define([
     "angular",
-    "./i18n.module"
-], function(angular, app){
+    "./i18n.module",
+    "underscore",
+    "var/noop"
+], function(angular, app, _, noop){
     "use strict";
     app.provider("$i18n", I18nProvider);
 
@@ -13,14 +15,32 @@ define([
         activate();
 
         function activate(){
-            self.sources = {};
+            self.messages = {};
+            var compilers = {};
             self.obj = {
-                getSoruce: function(lang, key){
-                    var sourceMap = self.sources[lang];
-                    if(sourceMap){
-                        return sourceMap[key];
+                getMessage: function(lang, key){
+                    var messageMap = self.messages[lang];
+                    if(messageMap){
+                        return messageMap[key];
                     }
                     return null;
+                },
+                compiler: function(lang, key){
+                    var message = self.obj.getMessage(lang, key);
+                    if(!message){
+                        return noop;
+                    }
+                    var templateMap = compilers[lang];
+                    if(!templateMap){
+                        compilers[lang] = templateMap = {};
+                    }
+                    var template = templateMap[key];
+                    if(!templateMap[key]){
+                        templateMap[key] = template = _.template(message);
+                    }
+                    return function(params){
+                        return template(params);
+                    };
                 }
             };
         }
@@ -30,7 +50,10 @@ define([
         };
 
         function config(options){
-            angular.extend(self.sources, options.source);
+            angular.extend(self.messages, options.messages);
+            if(angular.isFunction(options.compiler)){
+                self.obj.compiler = options.compiler;
+            }
         }
     }
 });

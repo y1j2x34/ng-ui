@@ -1,5 +1,6 @@
 define([
-    "./i18n.module"
+    "./i18n.module",
+    "./i18n.provider"
 ], function(app) {
     "use strict";
 
@@ -10,11 +11,12 @@ define([
         var service = this;
 
         service.getFirstBrowserLanguage = getFirstBrowserLanguage;
+        service.translateTo = translateTo;
 
         activate();
 
         function activate() {
-            service.lang = $i18n.lang;
+            service.lang = $i18n.lang || getFirstBrowserLanguage();
         }
 
         function getFirstBrowserLanguage() {
@@ -40,7 +42,7 @@ define([
         }
 
         function translateTo(lang, name, params) {
-
+            return $i18n.compiler(lang, name)(params);
         }
     }
 });

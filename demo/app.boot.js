@@ -1,6 +1,7 @@
 define([
     "angular",
     "./test-app",
+    "./test-app.config",
     "hello.controller"
 ], function(angular, app){
     "use strict";
