@@ -1,0 +1,41 @@
+{
+  "name": "listview",
+  "description": "listview",
+  "main": [
+    "dist/listview.min.js",
+    "dist/listview.min.css"
+  ],
+  "ignores": [
+    ".bowerrc",
+    ".gitignore",
+    "example",
+    "gulp.options.json",
+    "gulpfile.js",
+    "package.json",
+    "src/.jshintrc",
+    "README.md"
+  ],
+  "authors": [
+    "y1j2x34"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "listview",
+    "jquery"
+  ],
+  "homepage": "https://github.com/y1j2x34/listview",
+  "dependencies": {
+    "jquery": "2.0.3",
+    "requirejs": "^2.3.3"
+  },
+  "_release": "9fcb880b84",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "9fcb880b84506e135dbb1871c03a43aed9f0d366"
+  },
+  "_source": "https://github.com/y1j2x34/listview.git",
+  "_target": "*",
+  "_originalSource": "listview",
+  "_direct": true
+}

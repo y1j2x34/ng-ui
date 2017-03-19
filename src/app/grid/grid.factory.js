@@ -42,6 +42,8 @@ define([
             prevPage: prevPage,
             nextPage: nextPage,
             getRow: getRow,
+            getSelectedRows: getSelectedRows,
+            getSelectedRow: getSelectedRow,
             destroy: destroy
         });
 
@@ -57,7 +59,8 @@ define([
 
             var defaults = options.defaults || {};
             self.bordered = options.bordered !== false;
-            self.gridHeight = options.gridHeight;
+            self.height = options.height;
+            self.fixHeader = options.fixHeader !== false; // 默认值为true
 
             self.page = options.page;
             self.pageSize = options.pageSize;
@@ -273,6 +276,20 @@ define([
          */
         function getRow(self, id) {
             return self.dataMap[id];
+        }
+        /**
+         * 获取所有选中的行
+         * @return {Array}
+         */
+        function getSelectedRows(){
+            return [];
+        }
+        /**
+         * 获取选中的一行， 多选时返回第一行
+         * @return {Object}
+         */
+        function getSelectedRow(){
+            return undefined;
         }
         /**
          * 销毁

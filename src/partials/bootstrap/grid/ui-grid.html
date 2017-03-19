@@ -1,28 +1,33 @@
 <div>
-    <div class="grid_container" ng-class="{'grid_fixedheader': grid.fixHeader}">
-        <div class="grid_header">
-            <table class="table table-bordered" ui-grid-header>
-                <thead>
+    <div class="grid_container" ng-class="{'fix-header': delegate.fixHeader}">
+        <div class="grid_header" ng-if="delegate.fixHeader">
+            <table class="table table-bordered grid_header_table" ui-grid-header>
+                <thead class="grid_head">
                     <tr>
-                        <th ng-repeat="header in grid.grid.headers" class="grid_head" ui-grid-head-cell></th>
+                        <th ng-repeat="header in delegate.headers" class="grid_head" ui-grid-head-cell></th>
                     </tr>
                 </thead>
             </table>
         </div>
-        <div class="grid_body" ui-scrollbar="grid.gridBodyScrollbarOptions" box-height="{{grid.gridHeight}}">
-            <table class="table table-hover table-bordered">
+        <div class="grid_body" ui-scrollbar="grid.gridBodyScrollbarOptions" box-height="{{delegate.height}}">
+            <table class="table table-hover table-bordered grid_body_table">
+                <thead ng-if="!delegate.fixHeader" class="grid_head">
+                    <tr>
+                        <th ng-repeat="header in delegate.headers" class="grid_head" ui-grid-head-cell></th>
+                    </tr>
+                </thead>
                 <tbody>
-                    <tr ui-grid-row ng-repeat="$rowdata in grid.grid.data" ng-init="$rowIndex = $index" class="grid_row" data-index="{{$index}}">
-                        <td ng-repeat="$column in grid.grid.columns" ui-grid-row-cell></td>
+                    <tr ui-grid-row ng-repeat="$rowdata in grid.delegate.data" ng-init="$rowIndex = $index" class="grid_row" data-index="{{$index}}">
+                        <td ng-repeat="$column in delegate.columns" ui-grid-row-cell></td>
                     </tr>
                 </tbody>
             </table>
-            <div class="text-center" ng-if="!grid.grid.data || grid.grid.data.length < 1">
+            <div class="text-center" ng-if="!delegate.data || delegate.data.length < 1">
                 <h2>没有数据</h2>
             </div>
         </div>
         <div class="grid_toolbar_container">
-            <div ng-include="grid.footerTemplateUrl"> </div>
+            <div ng-include="delegate.footerTemplateUrl"> </div>
         </div>
         <!-- .grid_toolbar_container end -->
     </div>

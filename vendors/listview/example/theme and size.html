@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>主题&#38;大小</title>
+		<meta charset="utf-8">
+        <link rel="stylesheet" href="/vendors/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/src/style/listview.css">
+		<style type="text/css">
+			.icon-image-file{
+                background:url("http://www.easyicon.net/api/resizeApi.php?id=1128301&size=128")
+            }
+            .icon-text-file{
+                background:url("http://www.easyicon.net/api/resizeApi.php?id=1128298&size=128");
+            }
+            .icon-music-file{
+                background:url("http://www.easyicon.net/api/resizeApi.php?id=1128306&size=128");
+            }
+			#listview{
+				border:1px solid #ddd;
+			}
+			.toolbar{
+				margin:15px 0;
+			}
+            body{
+                background:white;
+            }
+		</style>
+	</head>
+	<body>
+		<div class="header">
+			<h6></h6>
+		</div>
+		<div class="container">
+			<div class="alert alert-info">
+				Ctrl+A 全选
+			</div>
+            <div class="row">
+                <div class="col-md-12 padding-5">
+                    <h3>修改主题和大小</h3>
+<pre><code>
+    var listview = $("#listview").data("listview");
+    // 修改主题
+    listview.update({
+        theme:"list" // or "grid"
+    });
+    // 修改大小
+    listview.update({
+        spec:"xs"// or sm or md or lg
+    });
+</code></pre>
+                <div>
+            </div>
+            <h3>演示</h3>
+			<div class="row">
+				<div class="col-md-3 toolbar">
+					<a id="create-listview-btn" class="btn btn-primary">create</a>
+					<a id="destroy-listview-btn" class="btn btn-danger">destroy</a>
+				</div>
+                <div class="col-md-6 pull-right">
+                    <div class="toolbar pull-right">
+                        <div class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-default">
+                                <i class="glyphicon glyphicon-th-list"></i>
+                                <input type="radio" name="theme" value="list">
+                            </label>
+                            <label class="btn btn-default active">
+                                <i class="glyphicon glyphicon-th"></i>
+                                <input type="radio" name="theme" value="grid" checked>
+                            </label>
+                        </div>
+                        <div class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-default">
+                                <input type="radio" name="size" value="xs">很小
+                            </label>
+                            <label class="btn btn-default">
+                                <input type="radio" name="size" value="sm">小
+                            </label>
+                            <label class="btn btn-default active">
+                                <input type="radio" name="size" value="md" checked>普通
+                            </label>
+                            <label class="btn btn-default">
+                                <input type="radio" name="size" value="lg">大
+                            </label>
+                        </div>
+                    </div>
+                </div>
+			</div>
+			<div class="row listview-container">
+				<div class="col-md-12">
+					<div id="listview"></div>
+				</div>
+			</div>
+
+		</div>
+		<script type="text/javascript"  src="/vendors/requirejs/require.js" data-main="themeAndSize" charset="utf-8"></script>
+	</body>
+</html>

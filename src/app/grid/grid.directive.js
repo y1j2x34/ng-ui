@@ -19,17 +19,18 @@ define([
             controller: "UIGridController",
             controllerAs: "grid",
             bindToController: {
-                "options": "=uiGrid"
+                "$delegate": "=uiGrid"
             },
             link: gridPostLink
         };
         return directive;
 
         function gridPostLink(scope, element, attrs, grid) {
-            var cancelWatchOption = scope.$watch("grid.options", function(options){
-                if(options){
+            var cancelWatchOption = scope.$watch("grid.$delegate", function(delegate){
+                if(delegate){
                     cancelWatchOption();
-                    grid.activate(options);
+                    scope.delegate = delegate;
+                    grid.activate(delegate);
                 }
             });
 

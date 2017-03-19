@@ -38,8 +38,12 @@ define([
 
             return $timeout(function() {
                 var width;
+                if(header.def.width === "auto"){
+                    header.realWidth = element.outerWidth();
+                    return;
+                }
                 if (header.def.width) {
-                    width = Math.max(50, Math.floor(header.def.width));
+                    width = Math.floor(header.def.width);
                 } else {
                     width = element.outerWidth();
                 }

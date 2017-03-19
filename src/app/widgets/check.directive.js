@@ -5,26 +5,19 @@ define([
     app.directive("uiCheck", checkDirective);
 
     /* @ngInject */
-    function checkDirective(){
+    function checkDirective($templateRequest){
         var directive = {
             restrict: "A",
             require: "ngModel",
-            templateUrl: "{theme}/widget/check.html",
-            replace: true,
-            bindToController: {
-                type: "@?",
-                value: "=ngModel",
-                ngChange:"&ngChange",
-                trueValue:"=?ngTrueValue",
-                falseValue:"=?ngFalseValue"
-            },
-            controller: CheckController,
-            controllerAs: "check"
+            compile: checkCompile
         };
         return directive;
-    }
-    /* @ngInject */
-    function CheckController(){
 
+        function checkCompile(element){
+            var templateUrl = "{themed}/widget/check.html";
+            $templateRequest(templateUrl).then(function(template){
+
+            });
+        }
     }
 });

@@ -12,6 +12,8 @@ var rename = require("gulp-rename");
 var requirejsOptimize = require('gulp-requirejs-optimize');
 var replace = require("gulp-replace");
 
+var sass = require("gulp-sass");
+
 var ngAnnotate = require("gulp-ng-annotate");
 var ngHtml2Js = require("gulp-ng-html2js");
 
@@ -25,7 +27,9 @@ gulp.task("webserver", webserverTask);
 gulp.task("validatejs", validatejsTask);
 gulp.task("html2js", ngHtml2JsTask);
 gulp.task("opitimizejs", ["validatejs", "html2js"], opitimizejsTask);
-gulp.task("default", ["opitimizejs"]);
+gulp.task("sass", compileScssTask);
+gulp.task("sass:watch", watchScssChangeTask);
+gulp.task("default", ["opitimizejs", "sass"]);
 
 function webserverTask() {
     var stream = gulp.src("./").pipe(webserver(opts.webserver));
@@ -38,6 +42,19 @@ var exitOnJshintError = map(function(file) {
         process.exit(1);
     }
 });
+
+function compileScssTask(){
+    return gulp.src("src/style/bootstrap/ng-ui.scss")
+            .pipe(sourcemap.init(opts.sass.sourcemap.initOptions))
+            .pipe(sass(opts.sass.options).on("error", sass.logError))
+            .pipe(sourcemap.write(opts.sass.sourcemap.writeOptions))
+            .pipe(gulp.dest(opts.sass.dest))
+    ;
+}
+
+function watchScssChangeTask(){
+    gulp.watch("src/style//bootstrap/**/*.scss", ["sass"]);
+}
 
 function validatejsTask() {
     gulp.src(opts.source.js)

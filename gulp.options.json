@@ -35,6 +35,17 @@
         "concatName": "partials.js",
         "destPath": "./dist"
     },
+    "sass": {
+        "dest": "./dist/css",
+        "options": {},
+        "sourcemap": {
+            "initOptions": {},
+            "writeOptions": {
+                "includeContent": true,
+                "debug": true
+            }
+        }
+    },
     "opitimize": {
         "dest": "./dist",
         "useStrict": true,

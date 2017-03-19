@@ -14,7 +14,11 @@ require.config({
         "underscore": "/vendors/underscore/underscore",
         "jquery-mousewheel": "/vendors/jquery-mousewheel/jquery-mousewheel",
         "jquery": "/vendors/jquery/dist/jquery",
-        "jquery.scrollbar": "/vendors/scrollbar-plugin/jQuery.mCustomScrollbar"
+        "jquery.scrollbar": "/vendors/scrollbar-plugin/jQuery.mCustomScrollbar",
+        "listview": "/vendors/listview/dist/listview"
+    },
+    bundles: {
+        "listview": ["listview.plugin"]
     },
     shim: {
         "angular": {

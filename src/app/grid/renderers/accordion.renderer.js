@@ -6,7 +6,12 @@ define([
     return {
         type: "ext",
         name: "accordion",
-        header: function(){},
+        init: function(def){
+            def.width = 30;
+            return def;
+        },
+        header: function(){
+        },
         row: function(options){
             options.element.append("<a ui-grid-accordion>");
         }

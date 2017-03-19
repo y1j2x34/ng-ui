@@ -8,10 +8,12 @@ require.config({
         "jquery-mousewheel": "/vendors/jquery-mousewheel/jquery-mousewheel",
         "jquery.scrollbar": "/vendors/scrollbar-plugin/jQuery.mCustomScrollbar",
         // "ngUI": "../dist/ng-ui",
-        "ng-ui-app": "../src/app/main"
+        "ng-ui-app": "../src/app/main",
+        "listview": "/vendors/listview/dist/listview"
     },
     bundles: {
-        // "ngUI": ["ng-ui-app"]
+        // "ngUI": ["ng-ui-app"],
+        // "listview": ["listview.plugin"]
     },
     shim: {
         "angular": {
@@ -24,6 +26,7 @@ require.config({
         "angular-sanitize": ["angular"]
     }
 });
+
 require([
     "app.boot"
 ]);

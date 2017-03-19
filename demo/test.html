@@ -5,54 +5,115 @@
         <title>测试</title>
         <link rel="stylesheet" href="/vendors/bootstrap/dist/css/bootstrap.css">
         <link rel="stylesheet" href="/vendors/scrollbar-plugin/jquery.mCustomScrollbar.css">
+        <link rel="stylesheet" href="/vendors/listview/src/style/listview.css">
+        <link rel="stylesheet" href="/dist/css/ng-ui.css">
+        <style media="screen">
+            .listview .icon-image-file{
+                background: url(http://download.easyicon.net/png/1202454/96/) 100% no-repeat ;
+            }
+            .listview .icon-music-file{
+                background: url(http://download.easyicon.net/png/1206032/96/) 100% no-repeat ;
+            }
+            .listview .icon-text-file{
+                background: url(http://download.easyicon.net/png/1205975/96/) 100% no-repeat ;
+            }
+        </style>
     </head>
     <body ng-controller="HelloController as self">
         <div class="container">
             <div class="row">
                 <div class="col-xs-12">
-                    <span ng-bind="hello.word"></span>
-                    <div ui-grid="self.gridOptions">
-
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h5>表格</h5>
+                        </div>
+                        <div class="panel-body">
+                            <div ui-grid="self.grid"> </div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-xs-6">
-                    <form class="form form-horizontal" action="index.html" method="post">
-                        <div class="form-body">
-                            <div class="form-group">
-                                <label class="col-xs-3 control-label">数字组件：</label>
-                                <div class="col-xs-4">
-                                    <input type="integer"
-                                        class="form-control"
-                                        ui-number
-                                        name="integerNumber"
-                                        ng-min="0"
-                                        ng-max="100"
-                                        step="1"
-                                        ng-model="self.integerNumber"
-                                        ng-model-options="{updateOn:'blur'}"
-                                        placeholder="整数(0,100,1)">
-                                    <div ng-bind="self.integerNumber"> </div>
-                                </div>
-                                <div class="col-xs-4">
-                                    <input
-                                    type="float"
-                                    class="form-control"
-                                    ui-number
-                                    name="floatNumber"
-                                    ng-min="0"
-                                    ng-max="1"
-                                    step="0.01"
-                                    ng-model="self.floatNumber"
-                                    placeholder="小数(0,1,0.01)">
-                                    <div ng-bind="self.floatNumber"> </div>
-                                </div>
-                            </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h5>表单</h5>
                         </div>
-                    </form>
-                    <span ng-bind="'xxxx'|translate:{placeholder:'\{\{占位符内容\}\}'}"></span>
-                    <span ng-bind="'xxxx'|translate:'en':{placeholder:''}"></span>
+                        <div class="panel-body">
+                            <form class="form form-horizontal" action="index.html" method="post">
+                                <div class="form-body">
+                                    <div class="form-group">
+                                        <label class="col-xs-3 control-label">数字组件：</label>
+                                        <div class="col-xs-4">
+                                            <input type="integer"
+                                                class="form-control"
+                                                ui-number
+                                                name="integerNumber"
+                                                ng-min="0"
+                                                ng-max="100"
+                                                step="1"
+                                                ng-model="self.integerNumber"
+                                                ng-model-options="{updateOn:'blur'}"
+                                                placeholder="整数(0,100,1)">
+                                            <div ng-bind="self.integerNumber"> </div>
+                                        </div>
+                                        <div class="col-xs-4">
+                                            <input
+                                            type="float"
+                                            class="form-control"
+                                            ui-number
+                                            name="floatNumber"
+                                            ng-min="0"
+                                            ng-max="1"
+                                            step="0.01"
+                                            ng-model="self.floatNumber"
+                                            placeholder="小数(0,1,0.01)">
+                                            <div ng-bind="self.floatNumber"> </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-xs-3">复选框</label>
+                                        <div class="col-xs-9">
+                                            <div class="checkbox-list">
+                                                <label>
+                                                    <input type="checkbox" name="checktype" ng-model="self.selectedSth" ui-check ng-true-value="'department'"> 组织机构
+                                                </label>
+                                                <label>
+                                                    <input type="checkbox" name="checktype" ng-model="self.selectedSth" ui-check ng-true-value="'role'"> 角色
+                                                </label>
+                                                <label>
+                                                    <input type="checkbox" name="checktype" ng-model="self.selectedSth" ui-check ng-true-value="'user'"> 用户
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h5>国际化</h5>
+                        </div>
+                        <div class="panel-body">
+                            <span ng-bind="'xxxx'|translate:{placeholder:'\{\{占位符内容\}\}'}"></span>
+                            <span ng-bind="'xxxx'|translate:'en':{placeholder:''}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h5>ListView组件</h5>
+                        </div>
+                        <div class="panel-body">
+                            <div ui-listview="self.listviewOptions"> </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
