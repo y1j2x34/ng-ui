@@ -48,7 +48,7 @@
         }
         if(definition){
             var clsName = definition.name;
-            if(! /\w+/.test(clsName)){
+            if(! /^\w+$/.test(clsName)){
                 throw new Error("Invalid class name: " + clsName);
             }
         }
