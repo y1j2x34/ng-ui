@@ -1,0 +1,30 @@
+<div class="ui_spinner input-group" ng-class="'ui_spinner_' + spinner.orientation">
+    <script type="text/ng-template" id="widget_spinner_partials_decrement_btn">
+        <a class="ui_spinner_btn decrement btn btn-default" ng-disabled="spinner.viewValue == spinner.min" ng-mousedown="spinner.startIncrement(spinner.decrementEvent)">
+            <i class="glyphicon glyphicon-minus"></i>
+        </a>
+    </script>
+    <script type="text/ng-template" id="widget_spinner_partials_increment_btn">
+        <a class="ui_spinner_btn increment btn btn-default" ng-disabled="spinner.viewValue == spinner.max" ng-mousedown="spinner.startIncrement(spinner.incrementEvent)">
+            <i class="glyphicon glyphicon-plus"></i>
+        </a>
+    </script>
+    <span class="input-group-btn" ng-if="spinner.isHorizontal" ng-include="'widget_spinner_partials_decrement_btn'"> </span>
+    <span class="input-group-btn" ng-if="spinner.isVertical" ng-include="'widget_spinner_partials_increment_btn'"> </span>
+
+    <input type="text" ui-number
+        class="ui_spinner_input form-control"
+        ng-model="spinner.viewValue"
+        ng-min="spinner.min"
+        ng-max="spinner.max"
+        step="{{spinner.step}}"
+        number-type="{{spinner.numberType}}"
+        ng-model-options="{updateOn:'blur'}"
+        ng-blur="spinner.handleBlurEvent()"
+        ng-keydown="spinner.handleKeydownEvent($event)"
+        ng-keyup="spinner.stopIncrement()"
+    >
+    <span class="input-group-btn" ng-if="spinner.isHorizontal"  ng-include="'widget_spinner_partials_increment_btn'"> </span>
+    <span class="input-group-btn" ng-if="spinner.isVertical"  ng-include="'widget_spinner_partials_decrement_btn'"> </span>
+
+</div>

@@ -53,8 +53,8 @@ define([
             var $rowIndex = scope.$rowIndex;
 
             if ($rowIndex === 0) {
+                autoAdjustWidth(scope, element, $column, columnIndex);
             }
-            autoAdjustWidth(scope, element, $column, columnIndex);
         }
 
         function autoAdjustWidth(scope, element, $column, columnIndex) {
@@ -81,8 +81,12 @@ define([
                 var columnWidth = $header.outerWidth();
                 setElementWidth(element, Math.floor(columnWidth));
             }
-
+            var lastWidth;
             function setElementWidth(element, width) {
+                if(lastWidth === width){
+                    return;
+                }
+                lastWidth = width;
                 element.css({
                     "max-width": width,
                     "width": width,

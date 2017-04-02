@@ -15,6 +15,7 @@ define([
             controller: HeadCheckboxController,
             controllerAs: "vm",
             templateUrl: "{themed}/grid/ui-grid-head-checkbox.html",
+            replace: true,
             link: headCheckboxPostLink
         };
         return directive;

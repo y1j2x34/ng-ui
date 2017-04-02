@@ -7,9 +7,17 @@ $grid_sequence_cell_width: 2em;
         margin-bottom: 0;
         table-layout: fixed;
 
-        tbody > tr > td,
-        thead > tr > th {
-            background-clip: padding-box;
+        tbody, thead{
+            >tr{
+                height: 1px;
+                >td,>th{
+                    background-clip: padding-box;
+                    height: 1px;
+                }
+                >th{
+                    font-weight: bold;
+                }
+            }
         }
     }
 
@@ -43,7 +51,31 @@ $grid_sequence_cell_width: 2em;
         text-overflow: ellipsis;
         word-wrap: normal;
     }
-
+    .ui_grid_cell_rendered--check,
+    .ui_grid_head_rendered--check
+    {
+        padding: 0;
+        // vertical-align: middle;
+        .grid_checkbox_label,
+        .grid_radio_label
+        {
+            display: block;
+            text-align: center;
+            margin: 0;
+            min-height: 100%;
+            height: auto!important;
+            height: 100%;
+            position: relative;
+            input{
+                position: absolute;
+                margin: -6px -6px 0;
+                left: 50%;
+                top: 50%;
+                width: 12px;
+                height: 12px;
+            }
+        }
+    }
     &.fix-header {
         .grid_header_table {
             .grid_head th {

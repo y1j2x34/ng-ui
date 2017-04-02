@@ -78,15 +78,17 @@ define([
                 },
                 store: store,
                 height: 300,
-                fixHeader: false
+                fixHeader: true
             };
             self.grid = new UIGrid(gridOptions);
             self.grid.on("selectAll", function(event){
                 console.info("selectAll", event);
+                self.selectedRows = self.grid.getSelectedRows();
             });
             self.grid.on("selectOne", function(selected, rowdata){
                 console.info("selectOne: ", selected, rowdata);
                 console.info(self.grid.getSelectedRows());
+                self.selectedRows = self.grid.getSelectedRows();
             });
             store.load();
         }

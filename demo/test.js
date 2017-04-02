@@ -9,7 +9,8 @@ require.config({
         "jquery.scrollbar": "/vendors/scrollbar-plugin/jQuery.mCustomScrollbar",
         // "ngUI": "../dist/ng-ui",
         "ng-ui-app": "../src/app/main",
-        "listview": "/vendors/listview/dist/listview"
+        "listview": "/vendors/listview/dist/listview",
+        "moment": "/vendors/moment/min/moment.min"
     },
     bundles: {
         // "ngUI": ["ng-ui-app"],

@@ -39,7 +39,9 @@ define([
         return directive;
 
         function preLink($scope, element, attrs) {
+            $scope._element = element[0];
             var jqWindow = angular.element($window);
+            var optionUpdated = false;
 
             $scope.model = {
                 scrollTo: scrollTo
@@ -50,10 +52,15 @@ define([
 
             var windowResizeEventId = "resize." + RandomUtil.randomString(6);
 
-            $scope.$watch("options", updateOnOptionsChange);
-            $scope.$watch(function() {
-                return element.is(":visible") + "_" + element.height();
-            }, fitHeight, true);
+            $scope.$watch("options", function(options){
+                if(options || !optionUpdated){
+                    updateOnOptionsChange(options);
+                    optionUpdated = true;
+                }
+            }, true);
+
+            $scope.$watch("_element.offsetHeight", fitHeight);
+
             jqWindow.on(windowResizeEventId, fitHeight);
 
             $scope.$on("$destroy", onScopeDestroy);
@@ -117,7 +124,7 @@ define([
             function fitBoxHeight(value) {
                 var height;
                 if (isNumeric(value)) {
-                    height = Number(value);
+                    height = parseInt(value, 10);
                 } else if (isPercent(value)) {
                     var top = element.offset().top;
                     var screenHeight = jqWindow.height();

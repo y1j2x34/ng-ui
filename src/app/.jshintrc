@@ -12,6 +12,7 @@
     "shadow": false,
     "supernew": false,
     "validthis": false,
+    "-W100": true,
 
     "eqeqeq": true,
     "undef": true,

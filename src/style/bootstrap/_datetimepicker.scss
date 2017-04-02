@@ -1,0 +1,207 @@
+$dtp_color: #e0e0e0;
+$dtp_padding: 10px;
+$dtp_body_topbottom_padding: 10px;
+$dtp_toolbar_topbottom_padding: 6px;
+$dtp_calendar_width: 240px;
+$dtp_timepicker_width: 180px;
+$dtp_toggler_padding: $dtp_padding;
+$dtp_toggler_color: #aaa;
+$dtp_toggler_hover_color: #bbb;
+$dtp_header_height: 30px;
+$dtp_footer_bg_color: #f0f0f0;
+$dtp_hover_bg_color: lighten(#337ab7, 10%);
+
+%dtp-ui-spinner-btn{
+    border: none;
+    @include box-shadow(none);
+    background: transparent;
+}
+%calendar-cell-active{
+    background-color: $dtp_hover_bg_color;
+    color: white;
+}
+@mixin calendar-cell(){
+    width: (100% / 7);
+    font-size: 12px;
+    text-align: center;
+
+    vertical-align: middle;
+    padding: 0px;
+    border-collapse: collapse;
+    cursor: pointer;
+    height: 25px;
+    @include user-select(none);
+    border: 1px solid $dtp_color;
+}
+.ui_datetimepicker{
+    border: 1px solid $dtp_color;
+    @include box-shadow(1px  1px 3px 1px #f0f0f0);
+    @include inline-block();
+    .dtp_header,
+    .dtp_body,
+    .dtp_footer{
+        width: 100%;
+    }
+    .dtp_header{
+        height: $dtp_header_height;
+        line-height: $dtp_header_height;
+        vertical-align: middle;
+        display: table;
+        border-bottom: 1px solid $dtp_color;
+
+        @include box-shadow(1px 0 6px 2px #f0f0f0);
+        .dtp_toggler,
+        .dtp_selectors{
+            display: table-cell;
+        }
+
+        .dtp_toggler{
+            width: 2em;
+            font-size: 12px;
+            color: $dtp_toggler_color;
+            cursor: pointer;
+        }
+        .dtp_preview{
+            padding-left: $dtp_toggler_padding;
+            text-align: left;
+        }
+        .dtp_next{
+            padding-right: $dtp_toggler_padding;
+            text-align: right;
+        }
+
+        .dtp_toggler:hover{
+            color: $dtp_toggler_hover_color;
+        }
+
+        .dtp_selectors{
+            text-align: center;
+        }
+    }
+    .dtp_body{
+        padding: $dtp_body_topbottom_padding $dtp_padding;
+        box-sizing: content-box;
+        display: table;
+        .dtp_calendar{
+            width: $dtp_calendar_width;
+            .dtp_calendar_table{
+                width: 100%;
+                th{
+                    font-weight: bold;
+                    @include calendar-cell();
+                }
+                td{
+                    color: #666666;
+                    @include calendar-cell();
+                    &:hover{
+                        @extend %calendar-cell-active;
+                    }
+                    &.active{
+                        @extend %calendar-cell-active;
+                        @include box-shadow(darken($dtp_hover_bg_color, 10%) 0 1px 3px 1px inset);
+                    }
+                }
+            }
+        }
+        .dtp_calendar,
+        .dtp_timepicker{
+            display: table-cell;
+        }
+        .dtp_timepicker{
+            width: $dtp_timepicker_width;
+            height: 100%;
+            vertical-align: middle;
+            text-align: center;
+            table{
+                @include inline-block();
+                .dtp_colon{
+                    padding: 0 6px;
+                }
+                .ui_spinner{
+                    width: 40px;
+                    .ui_spinner_btn{
+                        @extend %dtp-ui-spinner-btn;
+                        &:active,&:link,&:hover{
+                            @extend %dtp-ui-spinner-btn;
+                        }
+                        .glyphicon-minus:before{
+                            content: "\e114";
+                        }
+                        .glyphicon-plus:before{
+                            content: "\e113";
+                        }
+                    }
+                }
+            }
+        }
+        .dtp_timepicker table tr{
+            line-height: 0;
+        }
+    }
+    .dtp_footer{
+        padding: $dtp_toolbar_topbottom_padding $dtp_padding;
+        text-align: right;
+        background-color: $dtp_footer_bg_color;
+        border-top: 1px solid $dtp_color;
+    }
+
+    .dtp_dropdown{
+        @include inline-block();
+        .dtp_dropdown_text{
+            color: #333;
+            font-weight: bold;
+            font-size: 12px;
+            text-decoration: none;
+            cursor: pointer;
+            padding: 0 5px;
+            .caret{
+                border-width: 3px;
+            }
+        }
+        .dtp_dropdown_content{
+            display: none;
+            position: absolute;
+            overflow: hidden;
+            margin-top: -7px;
+            border: 1px solid $dtp_color;
+            background-color: darken(white, 1%);
+            .mCSB_dragger_bar{
+                margin: 1px;
+            }
+            .mCSB_scrollTools{
+                width: 4px;
+            }
+            ul{
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                >li{
+                    border-bottom:1px solid darken($dtp_color, 10%);
+                    font-size: 12px;
+                    line-height: 18px;
+                    padding: 2px 5px;
+
+                    &:last-child{
+                        border-bottom:none;
+                    }
+                    &:hover{
+                        background-color: $dtp_hover_bg_color;
+                        a{
+                            color: white;
+                        }
+                    }
+                    >a{
+                        cursor: pointer;
+                        color: #333;
+                        text-decoration: none;
+                    }
+                }
+            }
+        }
+        &.open {
+            .dtp_dropdown_content{
+                display: block;
+            }
+        }
+    }
+}

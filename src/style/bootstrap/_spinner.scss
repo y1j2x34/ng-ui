@@ -1,0 +1,75 @@
+.ui_spinner {
+    &>.ui_spinner_input{
+        text-align: center;
+    }
+    &.ui_spinner_horizontal{
+        .input-group-btn:first-child>.btn{
+            border-right: 0;
+        }
+    }
+    &.ui_spinner_vertical{
+        display: inline-block;
+        &.ui_spinner_xs{
+            width: 20px;
+            .btn{
+                padding: 1px 4px;
+                font-size: 12px;
+            }
+            .ui_spinner_input{
+                padding: 3px 0;
+            }
+        }
+        &.ui_spinner_md{
+            width: 30px;
+            .btn{
+                padding: 3px 5px;
+                font-size: 12px;
+            }
+            .ui_spinner_input{
+                padding: 3px 0;
+            }
+        }
+        &.ui_spinner_lg{
+            width: 40px;
+        }
+        position: relative;
+        overflow: hidden;
+
+        &>.form-control,
+        &>.input-group-btn
+        {
+            float: left;
+            display: block;
+            width: 100%;
+        }
+        &>.input-group-btn>.btn{
+            margin-left: 0;
+            width: 100%;
+        }
+        &>.input-group-btn:first-child>.btn{
+            float: left;
+            border-radius: 4px;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            border-bottom: 0;
+        }
+        &>.ui_spinner_input{
+            padding: 6px 0;
+            height: 25px;
+        }
+        &>.input-group-btn:last-child>.btn{
+            float: left;
+            border-radius: 4px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+            border-top: 0;
+        }
+        &>.input-group-btn:first-child{
+            top:0;
+        }
+        &>.input-group-btn:last-child{
+            bottom:0;
+        }
+    }
+}
+

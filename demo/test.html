@@ -8,6 +8,10 @@
         <link rel="stylesheet" href="/vendors/listview/src/style/listview.css">
         <link rel="stylesheet" href="/dist/css/ng-ui.css">
         <style media="screen">
+            body{
+                font-family:"Microsoft YaHei";
+                font-weight: 100;
+            }
             .listview .icon-image-file{
                 background: url(http://download.easyicon.net/png/1202454/96/) 100% no-repeat ;
             }
@@ -25,10 +29,56 @@
                 <div class="col-xs-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h5>表格</h5>
+                            <h5 class="panel-title">日期时间控件</h5>
+                        </div>
+                        <div class="panel-body" ng-init="self.spinnerValue = 4">
+                            <div class="row">
+                                <input type="text" ng-model="self.spinnerValue" ui-spinner min="0" max="100" step="2">
+                                <div class="col-xs-6">
+                                    <input type="text" class="ui_spinner_xs" ng-model="self.spinnerValue" ui-spinner min="0" max="100" step="2" orientation="vertical">
+                                    <input type="text" class="ui_spinner_md" ng-model="self.spinnerValue" ui-spinner min="0" max="100" step="2" orientation="vertical">
+                                    <input type="text" class="ui_spinner_lg" ng-model="self.spinnerValue" ui-spinner min="0" max="100" step="2" orientation="vertical">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <form class="form form-horizontal">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <label class="control-label col-xs-3">日期：</label>
+                                                <div class="col-xs-9">
+                                                    <input type="text" ng-model="self.timestamp" ui-datetimepicker>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-xs-3">时间戳：</label>
+                                                <div class="col-xs-9">
+                                                    <input type="number" ng-model="self.timestamp" class="form-control input-small" ng-init="self.timestamp = 1490887613171" step="1000">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h5 class="panel-title">表格</h5>
                         </div>
                         <div class="panel-body">
                             <div ui-grid="self.grid"> </div>
+                            <div >
+                                选择了：
+                                <ul class="nav">
+                                    <li ng-repeat="row in self.selectedRows" ng-bind="row|json">
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -37,7 +87,7 @@
                 <div class="col-xs-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h5>表单</h5>
+                            <h5 class="panel-title">表单</h5>
                         </div>
                         <div class="panel-body">
                             <form class="form form-horizontal" action="index.html" method="post">
@@ -95,7 +145,7 @@
                 <div class="col-xs-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h5>国际化</h5>
+                            <h5 class="panel-title">国际化</h5>
                         </div>
                         <div class="panel-body">
                             <span ng-bind="'xxxx'|translate:{placeholder:'\{\{占位符内容\}\}'}"></span>
@@ -108,7 +158,7 @@
                 <div class="col-xs-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h5>ListView组件</h5>
+                            <h5 class="panel-title">ListView组件</h5>
                         </div>
                         <div class="panel-body">
                             <div ui-listview="self.listviewOptions"> </div>

@@ -16,11 +16,13 @@
   "homepage": "",
   "dependencies": {
     "angular": "angularjs#1.5.8",
-    "requirejs": "2.1.22",
     "angular-sanitize": "1.5.8",
     "bootstrap": "3.3.7",
     "underscore": "^1.8.3",
     "jquery": "2.2.4",
-    "listview": "0.0.1"
+    "listview": "*",
+    "moment": "^2.18.1",
+    "requirejs": "2.3.3",
+    "compass-sass-mixins": "*"
   }
 }
