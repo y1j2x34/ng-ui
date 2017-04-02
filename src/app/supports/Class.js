@@ -41,6 +41,16 @@
                     name = definition.name || "<anonymous>";
                 }
                 break;
+            case 2:
+                if(isDefined(definition)){
+                    definition.name = name;
+                }
+        }
+        if(definition){
+            var clsName = definition.name;
+            if(! /\w+/.test(clsName)){
+                throw new Error("Invalid class name: " + clsName);
+            }
         }
         return extend(Class, definition);
     }
