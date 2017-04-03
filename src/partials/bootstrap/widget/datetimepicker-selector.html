@@ -1,0 +1,70 @@
+<div class="ui_datetimepicker_selector">
+    <div class="dtp_header">
+        <a class="dtp_toggler dtp_preview" ng-click="picker.previewMonth()">
+            <i class="glyphicon glyphicon-arrow-left"></i>
+        </a>
+        <div class="dtp_selectors">
+            <div class="dtp_dropdown dtp_month" ng-class="{'open': picker.showMonthSelector}">
+                <a class="dtp_dropdown_text" ng-focus="picker.monthSelectorFocus(picker.monthSelectorScrollbar)" ng-blur="picker.showMonthSelector = false" tabindex="-1">
+                    <span ng-bind="picker.locale._months[picker.viewValue.month]"></span>
+                    <i class="caret"></i>
+                </a>
+                <div class="dtp_dropdown_content" ui-scrollbar="picker.scrollbarOptions" scrollbar-model="picker.monthSelectorScrollbar" box-height="160px">
+                    <ul>
+                        <li ng-repeat="month in picker.locale._months" ng-mousedown="picker.selectMonth($index)" ng-class="{'active': picker.viewValue.month === $index}">
+                            <a href="javascript:;" ng-bind="month"></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="dtp_dropdown dtp_year" ng-class="{'open': picker.showYearSelector}">
+                <a class="dtp_dropdown_text" ng-focus="picker.yearSelectorFocus(picker.yearSelectorScrollbar)" ng-blur="picker.showYearSelector = false"  tabindex="-1">
+                    <span ng-bind="picker.viewValue.year"></span><i class="caret"></i>
+                </a>
+                <div class="dtp_dropdown_content" ui-scrollbar="picker.scrollbarOptions" scrollbar-model="picker.yearSelectorScrollbar" box-height="160px">
+                    <ul>
+                        <li ng-repeat="year in picker.selectionYears" ng-mousedown="picker.selectYear(year)" ng-class="{'active':picker.viewValue.year === year}">
+                            <a href="javascript:;" ng-bind="year"></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <a class="dtp_toggler dtp_next" ng-click="picker.nextMonth()">
+            <i class="glyphicon glyphicon-arrow-right"></i>
+        </a>
+    </div>
+    <div class="dtp_body">
+        <div class="dtp_calendar">
+            <table class="dtp_calendar_table">
+                <thead>
+                    <tr>
+                        <th ng-repeat="weekdayMin in picker.locale._weekdaysMin" ng-bind="weekdayMin"> </th>
+                    </tr>
+                </thead>
+                <tbody ui-mousewheel="picker.switchDateOnMouseWheel($event)">
+                    <tr ng-repeat="weekdays in picker.calendar.dateInfo">
+                        <td ng-repeat="weekday in weekdays" ng-bind="weekday.dayOfMonth" title="{{weekday.t}}" ng-click="picker.selectDate(weekday)" ng-class="{'other-month': !weekday.isCurrentMonth, 'active': weekday.isCurrentDate}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="dtp_timepicker">
+            <table>
+                <tr>
+                    <td class="dtp_spinner dtp_hover">
+                        <input type="text" class="ui_spinner_md" name="hour" ui-spinner ng-model="picker.time.hour" ng-change="picker.changeHour($value, $originValue)" min="-1" max="24" step="1" orientation="vertical">
+                    </td>
+                    <td class="dtp_colon">:</td>
+                    <td class="dtp_spinner dtp_minute">
+                        <input type="text" class="ui_spinner_md" name="minute" ng-model="picker.time.minute" ng-change="picker.changeMinute($value, $originValue)" ui-spinner min="-1" max="60" step="1" orientation="vertical">
+                    </td>
+                    <td class="dtp_colon">:</td>
+                    <td class="dtp_spinner dtp_second">
+                        <input type="text" class="ui_spinner_md" name="second" ng-model="picker.time.second" ng-change="picker.changeSeconds($value, $originValue)" ui-spinner min="-1" max="60" step="1" orientation="vertical">
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

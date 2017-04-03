@@ -5,7 +5,8 @@ define([
     "./listview.directive",
     "./check.directive",
     "./spinner.directive",
-    "./datetimepicker/datetimepicker.directive"
+    "./datetimepicker/datetimepicker.directive",
+    "./mousewheel.directive"
 ], function(app){
     "use strict";
     return app.name;

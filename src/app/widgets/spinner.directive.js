@@ -148,7 +148,7 @@ define([
         }
         function handleChangeEvent(originValue, newValue){
             if(angular.isFunction(self.change)){
-                self.change($parent, {
+                self.change({
                     $value: newValue,
                     $originValue: originValue
                 });

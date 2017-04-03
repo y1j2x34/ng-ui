@@ -20,6 +20,9 @@ $dtp_hover_bg_color: lighten(#337ab7, 10%);
     background-color: $dtp_hover_bg_color;
     color: white;
 }
+%dtp-bordered{
+    border: 1px solid $dtp_color;
+}
 @mixin calendar-cell(){
     width: (100% / 7);
     font-size: 12px;
@@ -31,12 +34,19 @@ $dtp_hover_bg_color: lighten(#337ab7, 10%);
     cursor: pointer;
     height: 25px;
     @include user-select(none);
-    border: 1px solid $dtp_color;
+    @extend %dtp-bordered;
 }
-.ui_datetimepicker{
-    border: 1px solid $dtp_color;
-    @include box-shadow(1px  1px 3px 1px #f0f0f0);
+@mixin selected-shadow($color){
+    @include box-shadow($color 0 1px 3px 1px inset)
+}
+.ui_datetimepicker_selector{
+    @extend %dtp-bordered;
+    // @include box-shadow(1px  1px 3px 1px #f0f0f0);
     @include inline-block();
+    background: white;
+    @include user-select(none);
+    @include border-radius(5px);
+
     .dtp_header,
     .dtp_body,
     .dtp_footer{
@@ -49,7 +59,7 @@ $dtp_hover_bg_color: lighten(#337ab7, 10%);
         display: table;
         border-bottom: 1px solid $dtp_color;
 
-        @include box-shadow(1px 0 6px 2px #f0f0f0);
+        // @include box-shadow(0 2px 3px 1px rgba(#f0f0f0, .8));
         .dtp_toggler,
         .dtp_selectors{
             display: table-cell;
@@ -80,7 +90,6 @@ $dtp_hover_bg_color: lighten(#337ab7, 10%);
     }
     .dtp_body{
         padding: $dtp_body_topbottom_padding $dtp_padding;
-        box-sizing: content-box;
         display: table;
         .dtp_calendar{
             width: $dtp_calendar_width;
@@ -98,7 +107,14 @@ $dtp_hover_bg_color: lighten(#337ab7, 10%);
                     }
                     &.active{
                         @extend %calendar-cell-active;
-                        @include box-shadow(darken($dtp_hover_bg_color, 10%) 0 1px 3px 1px inset);
+                        @include selected-shadow(darken($dtp_hover_bg_color, 10%));
+                    }
+                    &.other-month{
+                        color: #aaa;
+                    }
+                    &.other-month:hover{
+                        background-color: white;
+                        color: #666;
                     }
                 }
             }
@@ -184,11 +200,17 @@ $dtp_hover_bg_color: lighten(#337ab7, 10%);
                     &:last-child{
                         border-bottom:none;
                     }
-                    &:hover{
+                    &:hover,
+                    &.active
+                    {
                         background-color: $dtp_hover_bg_color;
                         a{
                             color: white;
                         }
+                    }
+                    &.active{
+                        background-color: $dtp_hover_bg_color;
+                        @include selected-shadow(darken($dtp_hover_bg_color, 5%));
                     }
                     >a{
                         cursor: pointer;
@@ -204,4 +226,16 @@ $dtp_hover_bg_color: lighten(#337ab7, 10%);
             }
         }
     }
+}
+.dtp_hide_datepicker .dtp_body{
+    padding: 0;
+}
+.dtp_hide_datepicker .dtp_body .dtp_calendar{
+    display: none;
+}
+.dtp_hide_timepicker .dtp_body .dtp_timepicker{
+    display: none;
+}
+.dtp_hide_datepicker .dtp_header{
+    display: none;
 }
