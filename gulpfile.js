@@ -91,7 +91,7 @@ function opitimizejsTask() {
         sourcemapOptions[key] = sourcemapWrieOptions[key];
     }
 
-    var gulppipe =
+    var stream =
 		gulp
         .src("src/app/ng-ui-app.js")
         .pipe(sourcemap.init(opitimizeOptions.sourcemap.initOptions))
@@ -104,7 +104,7 @@ function opitimizejsTask() {
         .pipe(uglify(opitimizeOptions.uglify))
         .pipe(sourcemap.write("/", sourcemapOptions));
 
-        gulppipe.pipe(gulp.dest(opitimizeOptions.dest));
+        stream.pipe(gulp.dest(opitimizeOptions.dest));
 
-		return gulppipe;
+		return stream;
 }

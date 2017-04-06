@@ -41,16 +41,6 @@ define([
         function datetimepickerPreLink(scope, element, attrs, ctrls) {
             var self = ctrls[0];
             var ngModel = ctrls[1];
-            var _mv;
-            Object.defineProperty(ngModel, "$modelValue", {
-                set: function(val){
-                    console.info("set ng model value: ", val, new Error());
-                    _mv = val;
-                },
-                get: function(){
-                    return _mv;
-                }
-            });
             // var _originRender = ngModel.$render;
             var lastViewValue, lastModelValue;
 

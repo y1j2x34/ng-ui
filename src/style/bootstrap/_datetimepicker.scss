@@ -11,35 +11,52 @@ $dtp_header_height: 30px;
 $dtp_footer_bg_color: #f0f0f0;
 $dtp_hover_bg_color: lighten(#337ab7, 10%);
 
-%dtp-ui-spinner-btn{
+$dtp_dropdown_triangle_left: 9px;
+$dtp_dropdown_triangle_top: -11px;
+
+%dtp-ui-spinner-btn {
     border: none;
     @include box-shadow(none);
     background: transparent;
 }
-%calendar-cell-active{
+
+%calendar-cell-active {
     background-color: $dtp_hover_bg_color;
     color: white;
 }
-%dtp-bordered{
+
+%dtp-bordered {
     border: 1px solid $dtp_color;
 }
-@mixin calendar-cell(){
+@mixin calendar-cell() {
     width: (100% / 7);
     font-size: 12px;
     text-align: center;
-
     vertical-align: middle;
-    padding: 0px;
+    padding: 0;
     border-collapse: collapse;
     cursor: pointer;
     height: 25px;
     @include user-select(none);
     @extend %dtp-bordered;
 }
-@mixin selected-shadow($color){
-    @include box-shadow($color 0 1px 3px 1px inset)
+@mixin selected-shadow($color) {
+     @include box-shadow($color 0 1px 3px 1px inset)
 }
-.ui_datetimepicker_selector{
+@mixin dropdown-triangle($color) {
+     @include inline-block;
+    width: 0;
+    height: 0;
+    border-width: 6px;
+    border-style: solid;
+    border-color: $color;
+    border-top-color: transparent;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    position: absolute;
+}
+
+.ui_datetimepicker_selector {
     @extend %dtp-bordered;
     // @include box-shadow(1px  1px 3px 1px #f0f0f0);
     @include inline-block();
@@ -47,172 +64,206 @@ $dtp_hover_bg_color: lighten(#337ab7, 10%);
     @include user-select(none);
     @include border-radius(5px);
 
-    .dtp_header,
     .dtp_body,
-    .dtp_footer{
+    .dtp_footer,
+    .dtp_header {
         width: 100%;
     }
-    .dtp_header{
+
+    .dtp_header {
         height: $dtp_header_height;
         line-height: $dtp_header_height;
         vertical-align: middle;
         display: table;
         border-bottom: 1px solid $dtp_color;
-
         // @include box-shadow(0 2px 3px 1px rgba(#f0f0f0, .8));
-        .dtp_toggler,
-        .dtp_selectors{
+        .dtp_selectors,
+        .dtp_toggler {
             display: table-cell;
         }
 
-        .dtp_toggler{
+        .dtp_toggler {
             width: 2em;
             font-size: 12px;
             color: $dtp_toggler_color;
             cursor: pointer;
         }
-        .dtp_preview{
+
+        .dtp_preview {
             padding-left: $dtp_toggler_padding;
             text-align: left;
         }
-        .dtp_next{
+
+        .dtp_next {
             padding-right: $dtp_toggler_padding;
             text-align: right;
         }
 
-        .dtp_toggler:hover{
+        .dtp_toggler:hover {
             color: $dtp_toggler_hover_color;
         }
 
-        .dtp_selectors{
+        .dtp_selectors {
             text-align: center;
         }
     }
-    .dtp_body{
+
+    .dtp_body {
         padding: $dtp_body_topbottom_padding $dtp_padding;
         display: table;
-        .dtp_calendar{
+
+        .dtp_calendar {
             width: $dtp_calendar_width;
-            .dtp_calendar_table{
+
+            .dtp_calendar_table {
                 width: 100%;
-                th{
+
+                th {
                     font-weight: bold;
                     @include calendar-cell();
                 }
-                td{
+
+                td {
                     color: #666666;
                     @include calendar-cell();
-                    &:hover{
+
+                    &:hover {
                         @extend %calendar-cell-active;
                     }
-                    &.active{
+
+                    &.active {
                         @extend %calendar-cell-active;
                         @include selected-shadow(darken($dtp_hover_bg_color, 10%));
                     }
-                    &.other-month{
+
+                    &.other-month {
                         color: #aaa;
                     }
-                    &.other-month:hover{
+
+                    &.other-month:hover {
                         background-color: white;
                         color: #666;
                     }
                 }
             }
         }
+
         .dtp_calendar,
-        .dtp_timepicker{
+        .dtp_timepicker {
             display: table-cell;
         }
-        .dtp_timepicker{
+
+        .dtp_timepicker {
             width: $dtp_timepicker_width;
             height: 100%;
             vertical-align: middle;
             text-align: center;
-            table{
+
+            table {
                 @include inline-block();
-                .dtp_colon{
+
+                .dtp_colon {
                     padding: 0 6px;
                 }
-                .ui_spinner{
+
+                .ui_spinner {
                     width: 40px;
-                    .ui_spinner_btn{
+
+                    .ui_spinner_btn {
                         @extend %dtp-ui-spinner-btn;
-                        &:active,&:link,&:hover{
+
+                        &:active,
+                        &:hover,
+                        &:link {
                             @extend %dtp-ui-spinner-btn;
                         }
-                        .glyphicon-minus:before{
+
+                        .glyphicon-minus:before {
                             content: "\e114";
                         }
-                        .glyphicon-plus:before{
+
+                        .glyphicon-plus:before {
                             content: "\e113";
                         }
                     }
                 }
             }
         }
-        .dtp_timepicker table tr{
+
+        .dtp_timepicker table tr {
             line-height: 0;
         }
     }
-    .dtp_footer{
+
+    .dtp_footer {
         padding: $dtp_toolbar_topbottom_padding $dtp_padding;
         text-align: right;
         background-color: $dtp_footer_bg_color;
         border-top: 1px solid $dtp_color;
     }
 
-    .dtp_dropdown{
+    .dtp_dropdown {
         @include inline-block();
-        .dtp_dropdown_text{
+
+        .dtp_dropdown_text {
             color: #333;
             font-weight: bold;
             font-size: 12px;
             text-decoration: none;
             cursor: pointer;
             padding: 0 5px;
-            .caret{
+
+            .caret {
                 border-width: 3px;
             }
         }
-        .dtp_dropdown_content{
+
+        .dtp_dropdown_content {
             display: none;
             position: absolute;
             overflow: hidden;
             margin-top: -7px;
             border: 1px solid $dtp_color;
             background-color: darken(white, 1%);
-            .mCSB_dragger_bar{
+
+            .mCSB_dragger_bar {
                 margin: 1px;
             }
-            .mCSB_scrollTools{
+
+            .mCSB_scrollTools {
                 width: 4px;
             }
-            ul{
+
+            ul {
                 list-style: none;
                 padding: 0;
                 margin: 0;
-                >li{
-                    border-bottom:1px solid darken($dtp_color, 10%);
+
+                > li {
+                    border-bottom: 1px solid darken($dtp_color, 10%);
                     font-size: 12px;
                     line-height: 18px;
                     padding: 2px 5px;
 
-                    &:last-child{
-                        border-bottom:none;
+                    &:last-child {
+                        border-bottom: none;
                     }
-                    &:hover,
-                    &.active
-                    {
+
+                    &.active,
+                    &:hover {
                         background-color: $dtp_hover_bg_color;
-                        a{
+
+                        a {
                             color: white;
                         }
                     }
-                    &.active{
+
+                    &.active {
                         background-color: $dtp_hover_bg_color;
                         @include selected-shadow(darken($dtp_hover_bg_color, 5%));
                     }
-                    >a{
+
+                    > a {
                         cursor: pointer;
                         color: #333;
                         text-decoration: none;
@@ -220,22 +271,100 @@ $dtp_hover_bg_color: lighten(#337ab7, 10%);
                 }
             }
         }
+
         &.open {
-            .dtp_dropdown_content{
+            .dtp_dropdown_content {
                 display: block;
             }
         }
     }
 }
-.dtp_hide_datepicker .dtp_body{
+
+.dtp_hide_datepicker .dtp_body {
     padding: 0;
 }
-.dtp_hide_datepicker .dtp_body .dtp_calendar{
+
+.dtp_hide_datepicker .dtp_body .dtp_calendar {
     display: none;
 }
-.dtp_hide_timepicker .dtp_body .dtp_timepicker{
+
+.dtp_hide_timepicker .dtp_body .dtp_timepicker {
     display: none;
 }
-.dtp_hide_datepicker .dtp_header{
+
+.dtp_hide_datepicker .dtp_header {
     display: none;
+}
+
+.ui_datetimepicker {
+    position: relative;
+
+    .dtp_container {
+        display: none;
+        min-width: 440px;
+    }
+    &.dtp_hide_timepicker .dtp_container{
+        min-width:260px;
+    }
+    &.dtp_hide_datepicker .dtp_container{
+        min-width:181px;
+    }
+
+    &.open {
+        .dtp_container {
+            display: block;
+            position: absolute;
+            float: left;
+            top: 100%;
+            left: 0;
+            z-index: 1000;
+            margin-top: 6px;
+            @include background-clip(padding-box);
+            .ui_datetimepicker_selector{
+                @include box-shadow(0 6px 12px rgba(0,0,0,.175));
+                @include border-top-left-radius(0);
+            }
+        }
+
+        .dtp_container:before {
+            content: "";
+            @include dropdown-triangle(#e0e0e0);
+            top: $dtp_dropdown_triangle_top;
+            left: $dtp_dropdown_triangle_left;
+        }
+
+        .dtp_container:after {
+            content: "";
+            @include dropdown-triangle(white);
+            top: ( $dtp_dropdown_triangle_top + 1 );
+            left: $dtp_dropdown_triangle_left;
+        }
+        &.pull-right{
+            .dtp_container{
+                right: 0;
+                left: auto;
+                .ui_datetimepicker_selector{
+                    @include border-top-right-radius(0);
+                }
+            }
+            .dtp_container:before,
+            .dtp_container:after{
+                left: auto;
+                right: $dtp_dropdown_triangle_left;
+            }
+        }
+    }
+    .dtp_viewer{
+        display: block;
+        text-align: left;
+    }
+    &.dtp_inline {
+        .dtp_viewer {
+            display: none;
+        }
+
+        .dtp_container {
+            @include inline-block;
+        }
+    }
 }

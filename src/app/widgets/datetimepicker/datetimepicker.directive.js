@@ -1,8 +1,9 @@
 define([
     "../widget.module",
     "moment",
+    "utils/random.util",
     "./datetimepicker-selector.directive"
-], function(app, moment){
+], function(app, moment, RandomUtil){
     "use strict";
 
     var DEFAULT_OPTIONS = {
@@ -12,13 +13,13 @@ define([
         timeFormat: "HH:mm:ss",
         timepicker: true,
         datepicker: true,
-        inline: true
+        inline: false
     };
 
     app.directive("uiDatetimepicker", datetimepickerDirective);
 
     /* @ngInject */
-    function datetimepickerDirective($parse){
+    function datetimepickerDirective($parse, $document){
         var directive = {
             restrict: "A",
             require: ["uiDatetimepicker", "ngModel"],
@@ -37,36 +38,8 @@ define([
         function datetimepickerPostLink(scope, element, attrs, ctrls){
             var picker = ctrls[0];
             var ngModel = ctrls[1];
-            var _v;
-            Object.defineProperty(picker, "viewValue", {
-                set: function(val){
-                    console.info("set view value : ", val, new Error());
-                    _v = val;
-                },
-                get: function(){
-                    return _v;
-                }
-            });
-            // var _mv;
-            // Object.defineProperty(ngModel, "$modelValue", {
-            //     set: function(val){
-            //         console.info("set ng model value: ", val, new Error());
-            //         _mv = val;
-            //     },
-            //     get: function(){
-            //         return _mv;
-            //     }
-            // });
-            // var _vv;
-            // Object.defineProperty(ngModel, "$viewValue", {
-            //     set: function(val){
-            //         console.info("set ng view value: ", val, new Error());
-            //         _vv = val;
-            //     },
-            //     get: function(){
-            //         return _vv;
-            //     }
-            // });
+            var globalMousedownEventName = RandomUtil.unique("mousedown.");
+
             ngModel.$render = function(){
                 if(!ngModel.$modelValue){
                     return;
@@ -84,6 +57,16 @@ define([
             scope.$watch("vm.viewValue", function(newValue, oldValue){
                 picker.handleDatetimeChange(newValue, oldValue);
             });
+            $document.on(globalMousedownEventName, function(event){
+                var isOutofElement = !angular.element(event.target).closest(element).is(element);
+                if(isOutofElement){
+                    picker.hideContainer();
+                    scope.$apply();
+                }
+            });
+            scope.$on("$destroy", function(){
+                $document.off(globalMousedownEventName);
+            });
         }
     }
     /* @gnInject */
@@ -93,6 +76,8 @@ define([
         self.handleDatetimeChange = handleDatetimeChange;
         self.parseModelValue = parseModelValue;
         self.formatViewValue = formatViewValue;
+        self.showContainer = showContainer;
+        self.hideContainer = hideContainer;
 
         function directivePostLink(ngModel, parsedModel){
             self.ngModel = ngModel;
@@ -141,6 +126,12 @@ define([
                 return self.ngModel.$modelValue;
             }
             return modelValue;
+        }
+        function showContainer(){
+            self.containerVisible = true;
+        }
+        function hideContainer(){
+            self.containerVisible = false;
         }
     }
 });
