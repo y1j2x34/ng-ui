@@ -1,6 +1,6 @@
 define([
-    "../supports/Class",
-    "./LoggerConfigure"
+    "supports/Class",
+    "./configure"
 ],function(Class, configure){
     "use strict";
 
@@ -15,9 +15,7 @@ define([
     var LOG_LEVELS = ["debug", "info", "warn", "error", "log"];
 
     var Logger = Class.singleton("Logger", {
-        statics: {
-            $updateLogLevel: onUpdateLogLevel
-        },
+        $updateLogLevel: onUpdateLogLevel,
         log: wrapper("log"),
         isDebugEnabled: isDebugEnabled,
         isInfoEnabled: isInfoEnabled,
@@ -28,11 +26,9 @@ define([
     return Logger;
 
     function onUpdateLogLevel(){
-        var proto = Logger.prototype;
-
-        for(var i =LOG_LEVELS.LENGTH-2;i >= 0; i--){
+        for(var i =LOG_LEVELS.length-2;i >= 0; i--){
             var logLevelName = LOG_LEVELS[i];
-            proto[logLevelName] = wrapper(logLevelName);
+            Logger[logLevelName] = wrapper(logLevelName);
         }
     }
 
@@ -82,7 +78,7 @@ define([
             method = "<anonymous>";
         }
 
-        var loc = " 位置： " + method + " (" + file + ")";
+        var loc = "Location: " + method + " (" + file + ")";
 
         var _logr = console[level] || noop;
         if (!_logr) {

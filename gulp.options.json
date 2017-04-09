@@ -1,6 +1,6 @@
 {
     "webserver":{
-        "port": 8080,
+        "port": 8787,
         "livereload": true,
         "directoryListening": true,
         "open": false

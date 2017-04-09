@@ -1,5 +1,5 @@
 define([
-    "../supports/Class"
+    "supports/Class"
 ], function(Class) {
     "use strict";
 

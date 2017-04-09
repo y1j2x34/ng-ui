@@ -77,6 +77,7 @@ define([
         self.parseModelValue = parseModelValue;
         self.formatViewValue = formatViewValue;
         self.showContainer = showContainer;
+        self.toggleContainer = toggleContainer;
         self.hideContainer = hideContainer;
 
         function directivePostLink(ngModel, parsedModel){
@@ -132,6 +133,13 @@ define([
         }
         function hideContainer(){
             self.containerVisible = false;
+        }
+        function toggleContainer(){
+            if(self.containerVisible){
+                self.hideContainer();
+            }else{
+                self.showContainer();
+            }
         }
     }
 });

@@ -1,0 +1,10 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h5 class="panel-title">树</h5>
+    </div>
+    <div class="panel-body">
+        <div ui-tree="{data: self.treeData, childName: 'children', droppable: false}" >
+            <span ng-bind="node.text"></span>
+        </div>
+    </div>
+</div>

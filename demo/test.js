@@ -10,7 +10,9 @@ require.config({
         // "ngUI": "../dist/ng-ui",
         "ng-ui-app": "../src/app/main",
         "listview": "/vendors/listview/dist/listview",
-        "moment": "/vendors/moment/min/moment.min"
+        "moment": "/vendors/moment/min/moment.min",
+        "pnotify": "/vendors/pnotify/dist/pnotify",
+        "pnotify.buttons": "/vendors/pnotify/dist/pnotify.buttons"
     },
     bundles: {
         // "ngUI": ["ng-ui-app"],

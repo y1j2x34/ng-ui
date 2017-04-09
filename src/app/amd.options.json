@@ -4,6 +4,9 @@
     "wrapShim": true,
     "logLevel": 0,
     "paths": {
+        "Class": "supports/Class",
+        "RandomUtil": "utils/random.util",
+        "Subnet": "utils/subnet",
         "partials": "../../dist/partials",
         "angular": "empty:",
         "angular-sanitize": "empty:",
@@ -11,7 +14,9 @@
         "jquery-mousewheel": "empty:",
         "jquery": "empty:",
         "jquery.scrollbar": "empty:",
-        "moment": "empty:"
+        "moment": "empty:",
+        "pnotify": "empty",
+        "pnotify.buttons": "empty:"
     },
     "shim":{
         "angular-sanitize": ["angular"]

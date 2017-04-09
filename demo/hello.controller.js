@@ -10,7 +10,43 @@ define([
         activate();
 
         function activate() {
-
+            self.treeData = [{
+                id: "0",
+                text: "Animal",
+                children: [{
+                    id: "01",
+                    text: "Dog"
+                },{
+                    id: "02",
+                    text: "Cat"
+                },{
+                    id: "03",
+                    text: "Hippopotamus"
+                },{
+                    id: "04",
+                    text: "Chicken",
+                    children:[{
+                        id: "041",
+                        text: "White Leghorn"
+                    },{
+                        id: "042",
+                        text: "Rhode Island Red"
+                    },{
+                        id: "043",
+                        text: "Jersey Giant"
+                    }]
+                }]
+            },{
+                id: "1",
+                text: "Vegetable",
+                children: [{
+                    id: "11",
+                    text: "Oranges"
+                },{
+                    id: "12",
+                    text: "Apples"
+                }]
+            }];
             self.listviewOptions = {
                 data: [{
                     cfg: {

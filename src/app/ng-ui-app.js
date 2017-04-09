@@ -1,6 +1,6 @@
 define([
     "./app.module",
-    "./init/themed.config"
+    "./init/app.config"
 ], function(app){
     "use strict";
     return app;

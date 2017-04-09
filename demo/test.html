@@ -6,6 +6,8 @@
         <link rel="stylesheet" href="/vendors/bootstrap/dist/css/bootstrap.css">
         <link rel="stylesheet" href="/vendors/scrollbar-plugin/jquery.mCustomScrollbar.css">
         <link rel="stylesheet" href="/vendors/listview/src/style/listview.css">
+        <link rel="stylesheet" href="/vendors/pnotify/dist/pnotify.css">
+        <link rel="stylesheet" href="/vendors/pnotify/dist/pnotify.buttons.css">
         <link rel="stylesheet" href="/dist/css/ng-ui.css">
         <style media="screen">
             body{
@@ -25,6 +27,13 @@
     </head>
     <body ng-controller="HelloController as self">
         <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div ng-include="'partials/ui-tree.html'">
+
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-xs-12">
                     <div class="panel panel-default">
@@ -48,49 +57,7 @@
             </div>
             <div class="row">
                 <div class="col-xs-12">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h5 class="panel-title">日期时间控件</h5>
-                        </div>
-                        <div class="panel-body" ng-init="self.spinnerValue = 4">
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <form class="form form-horizontal">
-                                        <div class="form-body">
-                                            <div class="form-group">
-                                                <label class="control-label col-xs-2">日期时间：</label>
-                                                <div class="col-xs-6">
-                                                    <input type="text" ng-model="self.datetime" ui-datetimepicker="{lang:'zh-CN'}">
-                                                    <input ng-model="self.datetime" class="form-control input-small" ng-init="self.timestamp = 1491200430984" step="1000">
-                                                </div>
-                                                <div class="col-xs-4">
-<pre>
-    滚轮： 切换日期
-    ctrl + 滚轮：切换月份
-    ctrl + shift + 滚轮 ：切换年
-</pre>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label col-xs-1">日期：</label>
-                                                <div class="col-xs-7">
-                                                    <input type="text" ng-model="self.date" ui-datetimepicker="{lang:'zh-CN', timepicker: false}">
-                                                    <input ng-model="self.date" class="form-control">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label col-xs-1">时间：</label>
-                                                <div class="col-xs-7">
-                                                    <input type="text" ng-model="self.time" ui-datetimepicker="{lang:'zh-CN', datepicker: false}">
-                                                    <input type="text" ng-model="self.time">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <ng-include src="'partials/datetimepicker.html'"/>
                 </div>
             </div>
             <div class="row">

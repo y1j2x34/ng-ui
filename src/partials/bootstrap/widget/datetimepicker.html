@@ -1,6 +1,6 @@
 <span class="ui_datetimepicker"
 ng-class="{'dtp_inline':vm.inline, 'dtp_hide_datepicker': !vm.datepicker, 'dtp_hide_timepicker': !vm.timepicker, 'open':vm.containerVisible}">
-    <a class="btn btn-sm btn-primary dtp_viewer" ng-click="vm.showContainer()">
+    <a class="btn btn-sm btn-primary dtp_viewer" ng-click="vm.toggleContainer()">
         <i class="glyphicon glyphicon-calendar" ng-if="!vm.timepicker"></i>
         <i class="glyphicon glyphicon-time" ng-if="vm.timepicker"></i>
         <span ng-bind="vm.ngModel.$modelValue"></span>

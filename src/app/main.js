@@ -9,6 +9,9 @@ require.config({
                 return "empty-partials";
             }
         })("${env}"),
+        "Class": "supports/Class",
+        "RandomUtil": "utils/random.util",
+        "Subnet": "utils/subnet",
         "angular": "/vendors/angular/angular",
         "angular-sanitize": "/vendors/angular-sanitize/angular-sanitize",
         "underscore": "/vendors/underscore/underscore",
@@ -16,7 +19,9 @@ require.config({
         "jquery": "/vendors/jquery/dist/jquery",
         "jquery.scrollbar": "/vendors/scrollbar-plugin/jQuery.mCustomScrollbar",
         "listview": "/vendors/listview/dist/listview",
-        "moment": "/vendors/moment/min/moment-with-locales.min"
+        "moment": "/vendors/moment/min/moment-with-locales.min",
+        "pnotify": "/vendors/pnotify/dist/pnotify",
+        "pnotify.buttons": "/vendors/pnotify/dist/pnotify.buttons"
     },
     bundles: {
         "listview": ["listview.plugin"]
@@ -34,7 +39,7 @@ require.config({
 // require(["./ng-ui-app"]);
 define([
     "./app.module",
-    "./init/themed.config",
+    "./init/app.config",
     "jquery"
 ], function(app){
     "use strict";
