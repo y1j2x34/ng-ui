@@ -1,5 +1,5 @@
 define([
-    "app.module",
+    "./ajax.module",
     "angular",
     "underscore",
     "./ajax.filterchain",
