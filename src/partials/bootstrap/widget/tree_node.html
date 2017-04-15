@@ -1,0 +1,5 @@
+<li class="ui_tree_node" ng-class="{'open':nodeCtrl.opened}">
+    <a href="javascript:;" class="ui_tree_node_content" ng-include="nodeCtrl.templateUrl" ng-click="nodeCtrl.toggle()" ng-keydown="nodeCtrl.onKeydown($event)">
+    </a>
+    <div ng-if="nodeCtrl.hasChildren" class="ui_sub_tree" ng-include="'{themed}/widget/sub_tree.html'"> </div>
+</li>

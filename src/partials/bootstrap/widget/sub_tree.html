@@ -1,4 +1,4 @@
 <ul class="ui_tree_node_list">
-    <li ng-repeat="node in node.children track by node.id" class="ui_tree_node" ui-tree-node>
+    <li ng-repeat="node in nodeCtrl.data.children track by node.id" class="ui_tree_node" ui-tree-node node-data="node">
     </li>
 </ul>

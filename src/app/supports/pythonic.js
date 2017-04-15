@@ -12,7 +12,7 @@
     Function.prototype.pythonic = pythonic;
 
     function pythonic(){
-        // jshint -W040
+        // jshint validthis: true
         var fn = this;
         var decorator = function(){
             var self = this;

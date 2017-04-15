@@ -1,0 +1,41 @@
+
+$ui_tree_sub_node_list_padding_left: 20px;
+$ui_tree_font_size: 1em;
+$ui_tree_node_content_height: ($ui_tree_font_size + .4em);
+
+.ui_tree{
+    .ui_tree_node_list{
+        list-style: none;
+        padding-left: 0;
+        @include user-select(none);
+        a{
+            text-decoration: none;
+        }
+        .ui_tree_node_list{
+            padding-left: $ui_tree_sub_node_list_padding_left;
+        }
+        .ui_tree_node{
+            height: $ui_tree_node_content_height;
+            overflow: hidden;
+            &.open{
+                height: auto;
+                @include transition(height .5s ease-out infinite);
+            }
+            .ui_tree_node_content{
+                display: table;
+                height: $ui_tree_node_content_height;
+                line-height: $ui_tree_node_content_height;
+                &>span,
+                &>div
+                {
+                    display: table-cell;
+                    font-size: $ui_tree_font_size;
+                    font-weight: inherit;
+                }
+                &>.ui_tree_node_icon{
+                    width: 15px;
+                }
+            }
+        }
+    }
+}

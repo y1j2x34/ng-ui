@@ -9,12 +9,13 @@ define([
     app.controller("UITreeController", TreeController);
 
     /* ngInject */
-    function TreeController(logger){
+    function TreeController(){
         var self = this;
         self.updateOptions = updateOptions;
 
         function updateOptions(options){
             self.rootTreeNodes = normalizeTreeNodeData(options.data, options);
+            self.nodeTemplateUrl = options.nodeTemplateUrl || "{themed}/widget/default-tree-node-tpl.html";
         }
 
         function normalizeTreeNodeData(data){

@@ -6,16 +6,15 @@ define([
     var CHARACTERS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     var HEX_CHARACTERS = "0123456789abcdefg";
     var counter = new Date().getTime();
-    return Class.create({
-        statics: {
-            randomString: function(size){
-                return randomString(size, CHARACTERS);
-            },
-            unique: function(prefix){
-                return (prefix || "") + (counter++).toString(16);
-            },
-            randomHex: randomHex
-        }
+    return Class.singleton("RandomUtil", {
+        pythonic: false,
+        randomString: function(size){
+            return randomString(size, CHARACTERS);
+        },
+        unique: function(prefix){
+            return (prefix || "") + (counter++).toString(16);
+        },
+        randomHex: randomHex
     });
 
     function randomHex(size){
