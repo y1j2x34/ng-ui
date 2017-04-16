@@ -13,9 +13,9 @@ define([
         };
         return directive;
 
-        function checkCompile(element){
+        function checkCompile(){
             var templateUrl = "{themed}/widget/check.html";
-            $templateRequest(templateUrl).then(function(template){
+            $templateRequest(templateUrl).then(function(){
 
             });
         }

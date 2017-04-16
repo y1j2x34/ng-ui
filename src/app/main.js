@@ -9,7 +9,6 @@ require.config({
                 return "empty-partials";
             }
         })("${env}"),
-        "Class": "supports/Class",
         "RandomUtil": "utils/random.util",
         "Subnet": "utils/subnet",
         "angular": "/vendors/angular/angular",

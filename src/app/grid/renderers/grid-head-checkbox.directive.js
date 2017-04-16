@@ -57,7 +57,6 @@ define([
                 selectedRows.push(rowdata);
                 self.selected = selectedRows.length === self.grid.delegate.data.length;
             }
-            console.info(selectedRows, self.grid.delegate.data);
         }
         function selectStateChange(selected){
             if(selected){

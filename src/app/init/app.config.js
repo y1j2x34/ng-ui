@@ -1,6 +1,5 @@
 define([
     "app.module",
-    "ajax/ajax.filterchain",
     "./themed.config",
     "./logger.config"
 ], function(){

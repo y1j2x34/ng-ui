@@ -16,7 +16,9 @@
         "jquery.scrollbar": "empty:",
         "moment": "empty:",
         "pnotify": "empty",
-        "pnotify.buttons": "empty:"
+        "pnotify.buttons": "empty:",
+        "listview": "empty:",
+        "listview.plugin": "empty:"
     },
     "shim":{
         "angular-sanitize": ["angular"]

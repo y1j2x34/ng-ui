@@ -1,7 +1,7 @@
 define([
     "./ajax.module",
     "underscore",
-    "Class"
+    "supports/Class"
 ], function(app, _, Class) {
     "use strict";
     app.provider("$ajax", AjaxProvider);
@@ -13,6 +13,7 @@ define([
             self.$baseUrl = "";
             self.$handlers = {};
         },
+        setBaseUrl: setBaseUrl,
         use: use,
         putUrl: putUrl,
         getUrlConfig: getUrlConfig,
@@ -23,13 +24,14 @@ define([
     AjaxProvider.prototype = ajaxConfigurer;
 
     function AjaxProvider() {
-        var self = this;
-
-        self.$get = function() {
+        ajaxConfigurer.$get = function() {
             return ajaxConfigurer;
         };
+        return ajaxConfigurer;
     }
-
+    function setBaseUrl(self, baseUrl){
+        self.$baseUrl = baseUrl;
+    }
     function use(self) {
         self.$filters =
             _.chain(arguments) //

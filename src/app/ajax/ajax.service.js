@@ -2,14 +2,14 @@ define([
     "./ajax.module",
     "angular",
     "underscore",
-    "./ajax.filterchain",
+    "./ajax.filterchain.factory",
     "./ajax.provider"
-], function(app, angular, _, FilterChain) {
+], function(app, angular, _) {
     "use strict";
     app.service("ajax", AjaxService);
 
     /* @ngInject */
-    function AjaxService($ajax, $http, $q) {
+    function AjaxService($ajax, $http, $q, FilterChain) {
         var service = this;
         service.request = request;
 
@@ -34,12 +34,12 @@ define([
         function request(urlname, params, headers) {
             var config = $ajax.getUrlConfig(urlname);
 
-            var url = config.absoluteUrl || mergeUrl($ajax.$baseUrl + config.url);
+            var url = config.absoluteUrl || mergeUrl($ajax.$baseUrl , config.url);
             var data = _.extend({}, config.params, params);
             var _headers = _.extend({}, config.headers, headers);
 
             var options = {
-                method: config.method,
+                method: config.method || "get",
                 url: url,
                 headers: _headers
             };
@@ -68,7 +68,7 @@ define([
     function mergeUrl(baseUrl, path) {
         var sepRegex = /\\g/;
         baseUrl = baseUrl.replace(sepRegex, "/");
-        path = path.relace(sepRegex, "/");
+        path = path.replace(sepRegex, "/");
 
         var lastSepIndex = baseUrl.lastIndexOf("/");
         if (lastSepIndex !== baseUrl.length - 1) {

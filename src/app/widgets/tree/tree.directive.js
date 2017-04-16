@@ -3,13 +3,13 @@ define([
     "utils/random.util",
     "./tree.controller",
     "./tree-node.directive"
-], function(app, RandomUtil){
+], function(app){
     "use strict";
-    var DEFAULT_NODE_TEMPLATE_ID = "default_tree_node_template.html";
+    // var DEFAULT_NODE_TEMPLATE_ID = "default_tree_node_template.html";
     app.directive("uiTree", uiTreeDirective);
 
     /* @ngInject */
-    function uiTreeDirective($templateCache){
+    function uiTreeDirective(){
         var directive = {
             restrict: "AE",
             scope: true,
@@ -25,7 +25,7 @@ define([
         };
         return directive;
 
-        function compileUITree(element){
+        function compileUITree(){
             // var nodeTemplateHtml = element.html().trim();
             // var treeNodeTemplateId;
             // if(nodeTemplateHtml.length < 1){
