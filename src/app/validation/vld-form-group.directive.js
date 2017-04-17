@@ -10,7 +10,7 @@ define([
     function validFormGroupDirective() {
         var directive = {
             restrict: "A",
-            require: "^^form",
+            require: ["vldFormGroup","^^form"],
             template: "<div ng-class=\"{true:vldGroup.errorCls}[(vldGroup.dirty?vldGroup.model.$dirty: true) && vldGroup.model.$invalid]\" ng-transclude>",
             replace: true,
             transclude: true,
@@ -20,12 +20,16 @@ define([
             },
             controller: ValidFormGroupController,
             controllerAs: "vldGroup",
-            link: postLink
+            link: {
+                pre: preLink
+            }
         };
         return directive;
 
-        function postLink(scope, element, attr, formModel) {
-            scope.vldGroup.__init__(formModel);
+        function preLink(scope, element, attr, ctrls) {
+            var vm = ctrls[0];
+            var formCtrl = ctrls[1];
+            vm.__init__(formCtrl);
         }
     }
     /* @ngInject */
@@ -37,7 +41,6 @@ define([
         function __init__(form) {
             var config = self.config;
             self.form = form;
-            self.field = config.field;
             self.dirty = config.dirty === undefined ? true : !!config.dirty;
             self.errorCls = config.errorCls || "has-error";
         }
@@ -46,12 +49,14 @@ define([
          * @param {object} ngModel NgModelController
          */
         function $setNgModel(ngModel) {
-            if (self.field && ngModel.name === self.field) {
+            var config = self.config;
+            if (config.field && ngModel.$name === self.field) {
                 self.model = ngModel;
             } else if (self.model === undefined) {
                 self.model = ngModel;
-                self.field = ngModel.name;
             }
+            self.field = ngModel.$name;
+            self.form.formgroups[self.field] = self;
         }
     }
 });

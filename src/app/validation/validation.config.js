@@ -12,9 +12,9 @@ define([
     function configValidationMessage($validationProvider) {
         $validationProvider.handles.regist("visibility", function(modelCtrl, formCtrl, messageElement, isInvalid) {
             if (isInvalid) {
-                messageElement.show();
+                messageElement.addClass("ng-show");
             } else {
-                messageElement.hide();
+                messageElement.removeClass("ng-show");
             }
         });
     }
@@ -40,10 +40,13 @@ define([
                 link.pre = function(scope, element, attr, ctrls) {
                     var modelCtrl = ctrls[0];
                     var vldFormGroupCtrl = ctrls[ctrlIndex];
+
+                    var result = preLink.apply(this, arguments);
+
                     if (vldFormGroupCtrl) {
                         vldFormGroupCtrl.$setNgModel(modelCtrl);
                     }
-                    return preLink.apply(this, arguments);
+                    return result;
                 };
                 return link;
             };
@@ -73,6 +76,8 @@ define([
 
                     link.pre = function(scope, element, attr, ctrls) {
                         var formCtrl = ctrls[0];
+                        formCtrl.formgroups = {};
+
                         if (!isNgForm) {
                             formCtrl.$submit = function() {
                                 return element.submit();

@@ -30,6 +30,9 @@ gulp.task("opitimizejs", ["validatejs", "html2js"], opitimizejsTask);
 gulp.task("sass", compileScssTask);
 gulp.task("sass:watch", watchScssChangeTask);
 gulp.task("default", ["opitimizejs", "sass"]);
+gulp.task("watch", function(){
+    gulp.watch("./src/app/**/*.js", ["opitimizejs"]);
+});
 
 function webserverTask() {
     var stream = gulp.src("./").pipe(webserver(opts.webserver));
