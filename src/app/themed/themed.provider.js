@@ -30,7 +30,7 @@ define([
                 return;
             }
             self.name = options.name || self.name;
-            self.baseUrl = options.baseUrl || "src/partials/" + self.name;
+            self.baseUrl = options.baseUrl || "/src/partials/" + self.name;
         }
     }
 });

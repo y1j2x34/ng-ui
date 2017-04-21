@@ -25,7 +25,7 @@
         "sources": ["./src/partials/**/*.html"],
         "html2jsOptions": {
             "moduleName": "ngUI.partials",
-            "prefix": "src/partials/"
+            "prefix": "/src/partials/"
         },
         "minifyHtmlOptions": {
             "empty": true,

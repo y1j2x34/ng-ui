@@ -3,8 +3,9 @@ define([
     "underscore",
     "supports/Class",
     "event/subject",
-    "./datasource",
-    "./jsonDatasource",
+    "./http.datasource.factory",
+    "./ajax.datasource.factory",
+    "./json.datasource.factory",
     "./store.provider"
 ], function(app, _, Class, Subject) {
     "use strict";

@@ -2,7 +2,7 @@ define([
     "app.module"
 ], function(app) {
     "use strict";
-    var PARTIALS_URL_PREFFIX = "src/partials";
+    var PARTIALS_URL_PREFFIX = "/src/partials";
     app.config(configure);
 
     /* @ngInject */
