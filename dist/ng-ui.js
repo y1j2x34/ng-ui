@@ -1674,7 +1674,7 @@ define('ajax/ajax.provider',[
             throw new Error("invalid url config: " + config);
         }
         config.cache = !!config.cache;
-        config.method = config.method ? "GET" : config.method;
+        config.method = config.method || "GET";
         config.payload = !!config.payload;
         self.$urlmap[name] = config;
     }
