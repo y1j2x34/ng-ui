@@ -1598,6 +1598,83 @@ define('widgets/tree/tree.directive',[
         }
     }
 });
+define('widgets/notify.service',[
+    "./widget.module",
+    "pnotify",
+    "angular",
+    "pnotify.buttons"
+], function(app, PNotify, angular) {
+    "use strict";
+    app.service("$notify", NotifyService);
+    var DEFAULT_TITLES = {
+        "success": "提示",
+        "info": "提示",
+        "notice": "警告",
+        "error": "错误"
+    };
+    /* @ngInject */
+    function NotifyService() {
+        var service = this;
+        service.notify = notify;
+        service.success = success;
+        service.info = info;
+        service.notice = notice;
+        service.error = error;
+        service.dark = dark;
+
+        function notify(options) {
+            if (!angular.isObject(options)) {
+                options = {};
+            }
+            options.styling = options.styling || "bootstrap3";
+            return new PNotify(options);
+        }
+
+        function success(title, text) {
+            return typedNotify("success", title, text);
+        }
+
+        function info(title, text) {
+            return typedNotify("info", title, text);
+        }
+
+        function notice(title, text) {
+            return typedNotify("notice", title, text);
+        }
+
+        function error(title, text) {
+            return typedNotify("error", title, text);
+        }
+
+        function dark(title, text) {
+            return typedNotify("info", {
+                title: arguments.length > 1 ? title : undefined,
+                text: text || title,
+                addClass: "dark"
+            });
+        }
+
+        function typedNotify(type, title, text) {
+            if (angular.isObject(title)) {
+                return notify(angular.extend(title, {
+                    type: type
+                }));
+            } else if (!text) {
+                return notify({
+                    type: type,
+                    title: DEFAULT_TITLES[type],
+                    text: title
+                });
+            } else {
+                return notify({
+                    type: type,
+                    title: title,
+                    text: text
+                });
+            }
+        }
+    }
+});
 define('widgets/widgets-require',[
     "./widget.module",
     "./scrollbar.directive",
@@ -1607,7 +1684,8 @@ define('widgets/widgets-require',[
     "./spinner.directive",
     "./datetimepicker/datetimepicker.directive",
     "./mousewheel.directive",
-    "./tree/tree.directive"
+    "./tree/tree.directive",
+    "./notify.service"
 ], function(app){
     "use strict";
     return app.name;
@@ -1748,14 +1826,15 @@ define('ajax/ajax.filterchain.factory',[
     /* @ngInject */
     function filterChainFactory($injector){
         var FilterChain = Class.create("FilterChain", {
-            init: function(self, filters, index) {
+            init: function(self, filters, urlconfig, index) {
                 self.$filters = filters;
+                self.urlconfig = urlconfig;
                 self.$index = index;
             },
             next: function(self, request) {
                 var filters = self.$filters;
                 var filter = filters[self.$index];
-                var chain = new FilterChain(filters, self.$index + 1);
+                var chain = new FilterChain(filters, self.urlconfig, self.$index + 1);
                 var result = $injector.invoke(filter, filters, {
                     options: request,
                     request: request,
@@ -1764,7 +1843,7 @@ define('ajax/ajax.filterchain.factory',[
                 return result;
             },
             retry: function(self, request) {
-                return new FilterChain(self.$filters, 0).next(request);
+                return new FilterChain(self.$filters, self.urlconfig, 0).next(request);
             },
             final: function(self, result) {
                 return result;
@@ -1829,7 +1908,7 @@ define('ajax/ajax.service',[
             var filters = _.union(DEFAULT_PREPARE_FILTERS, _.map($ajax.$filters, getFilter), DEFAULT_RESPONSE_FILTERS);
             filters.push(doHttp);
 
-            return new FilterChain(filters, 0).next(options);
+            return new FilterChain(filters, config, 0).next(options);
         }
 
         function doHttp(options, chain) {

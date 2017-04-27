@@ -13,4 +13,5 @@
 })(this, function(window, angular){
     "use strict";
     <%= contents %>
+    return module;
 });

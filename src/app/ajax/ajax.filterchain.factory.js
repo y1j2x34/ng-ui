@@ -7,14 +7,15 @@ define([
     /* @ngInject */
     function filterChainFactory($injector){
         var FilterChain = Class.create("FilterChain", {
-            init: function(self, filters, index) {
+            init: function(self, filters, urlconfig, index) {
                 self.$filters = filters;
+                self.urlconfig = urlconfig;
                 self.$index = index;
             },
             next: function(self, request) {
                 var filters = self.$filters;
                 var filter = filters[self.$index];
-                var chain = new FilterChain(filters, self.$index + 1);
+                var chain = new FilterChain(filters, self.urlconfig, self.$index + 1);
                 var result = $injector.invoke(filter, filters, {
                     options: request,
                     request: request,
@@ -23,7 +24,7 @@ define([
                 return result;
             },
             retry: function(self, request) {
-                return new FilterChain(self.$filters, 0).next(request);
+                return new FilterChain(self.$filters, self.urlconfig, 0).next(request);
             },
             final: function(self, result) {
                 return result;

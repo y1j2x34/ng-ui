@@ -7,7 +7,8 @@ define([
     "./spinner.directive",
     "./datetimepicker/datetimepicker.directive",
     "./mousewheel.directive",
-    "./tree/tree.directive"
+    "./tree/tree.directive",
+    "./notify.service"
 ], function(app){
     "use strict";
     return app.name;

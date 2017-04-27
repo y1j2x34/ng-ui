@@ -1,0 +1,26 @@
+{
+    "baseUrl": "./src/app",
+    "optimize": "none",
+    "wrapShim": true,
+    "logLevel": 0,
+    "paths": {
+        "Class": "supports/Class",
+        "RandomUtil": "utils/random.util",
+        "Subnet": "utils/subnet",
+        "partials": "../../dist/partials",
+        "angular": "empty:",
+        "angular-sanitize": "empty:",
+        "underscore": "empty:",
+        "jquery-mousewheel": "empty:",
+        "jquery": "empty:",
+        "jquery.scrollbar": "empty:",
+        "moment": "empty:",
+        "pnotify": "empty:",
+        "pnotify.buttons": "empty:",
+        "listview": "empty:",
+        "listview.plugin": "empty:"
+    },
+    "shim":{
+        "angular-sanitize": ["angular"]
+    }
+}

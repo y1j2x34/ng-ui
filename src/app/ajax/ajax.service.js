@@ -53,7 +53,7 @@ define([
             var filters = _.union(DEFAULT_PREPARE_FILTERS, _.map($ajax.$filters, getFilter), DEFAULT_RESPONSE_FILTERS);
             filters.push(doHttp);
 
-            return new FilterChain(filters, 0).next(options);
+            return new FilterChain(filters, config, 0).next(options);
         }
 
         function doHttp(options, chain) {
