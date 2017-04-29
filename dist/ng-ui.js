@@ -1251,7 +1251,6 @@ define('widgets/spinner.directive',[
 define('widgets/datetimepicker/datetimepicker-selector.controller',[
     "angular",
     "../widget.module",
-    "underscore",
     "moment"
 ], function(angular, app, moment){
     "use strict";

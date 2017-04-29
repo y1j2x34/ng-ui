@@ -1,7 +1,6 @@
 define([
     "angular",
     "../widget.module",
-    "underscore",
     "moment"
 ], function(angular, app, moment){
     "use strict";
