@@ -76,8 +76,17 @@ define([
                 expr;
 
                 if(angular.isString(conf) || angular.isArray(conf)){
-                    errorNames = normalizeErrorNames(conf);
-                }else if(angular.isObject(conf)){
+                    conf = {
+                        "for": conf
+                    };
+                }
+                if(!conf){
+                    conf = {
+                        "for":["required"]
+                    };
+                }
+
+                if(angular.isObject(conf)){
                     action = conf.action || "visibility";
                     if(conf["for"]){
                         errorNames = normalizeErrorNames(conf["for"]);

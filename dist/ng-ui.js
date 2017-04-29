@@ -338,9 +338,10 @@ define('utils/random.util',[
 define('widgets/scrollbar.directive',[
     "./widget.module",
     "angular",
+    "underscore",
     "utils/random.util",
     "jquery.scrollbar"
-], function(app, angular, RandomUtil) {
+], function(app, angular, _, RandomUtil) {
     "use strict";
 
     scrollbarDirective.$inject = ["$timeout", "$window"];
@@ -378,6 +379,7 @@ define('widgets/scrollbar.directive',[
 
         function preLink($scope, element, attrs) {
             $scope._element = element[0];
+            var lazyUpdateOption = _.debounce(updateOnOptionsChange,1000/25);
             var jqWindow = angular.element($window);
             var optionUpdated = false;
 
@@ -392,7 +394,7 @@ define('widgets/scrollbar.directive',[
 
             $scope.$watch("options", function(options){
                 if(options || !optionUpdated){
-                    updateOnOptionsChange(options);
+                    lazyUpdateOption(options);
                     optionUpdated = true;
                 }
             }, true);
@@ -953,16 +955,12 @@ define('widgets/spinner.directive',[
         return numberType;
     }
 });
-define('var/noop',[],function(){
-    "use strict";
-    return function noop(){};
-});
 define('widgets/datetimepicker/datetimepicker-selector.controller',[
     "../widget.module",
-    "var/noop",
+    "underscore",
     "moment",
     "angular"
-], function(app, noop, moment, angular){
+], function(app, _, moment, angular){
     "use strict";
     DatetimepickerController.$inject = ["$scope"];
     var isNumber = angular.isNumber;
@@ -973,7 +971,7 @@ define('widgets/datetimepicker/datetimepicker-selector.controller',[
     function DatetimepickerController($scope){
         var self = this;
         self.locale = locale;
-        self.directivePostLink = noop;
+        self.directivePostLink = _.noop;
         self.directivePreLink = directivePreLink;
         self.changeSeconds = changeSeconds;
         self.changeMinute = changeMinute;
@@ -1319,6 +1317,9 @@ define('widgets/datetimepicker/datetimepicker.directive',[
             restrict: "A",
             require: ["uiDatetimepicker", "ngModel"],
             templateUrl: "{themed}/widget/datetimepicker.html",
+            transclude:{
+                control: "?control"
+            },
             replace: true,
             scope: true,
             bindToController: {
@@ -1959,6 +1960,10 @@ define('grid/grid.module',[
         widgetModuleName,
         ajaxModuleName
     ]);
+});
+define('var/noop',[],function(){
+    "use strict";
+    return function noop(){};
 });
 define('grid/renderers/value.renderer',[
     "jquery",
@@ -4025,7 +4030,10 @@ define('validation/validation.config',[
             for (var k in errors) {
                 var models = errors[k];
                 for (var i in models) {
-                    errorModels.push(models[i]);
+                    var model = models[i];
+                    if(model.$invalid && model.$setDirty){
+                        errorModels.push(model);
+                    }
                 }
             }
             return errorModels;
@@ -4045,7 +4053,9 @@ define('validation/vld-form-group.directive',[
     function validFormGroupDirective() {
         var directive = {
             restrict: "A",
-            require: ["vldFormGroup","^^form"],
+            require: {
+                form: "^^form"
+            },
             template: "<div ng-class=\"{true:vldGroup.errorCls}[(vldGroup.dirty?vldGroup.model.$dirty: true) && vldGroup.model.$invalid]\" ng-transclude>",
             replace: true,
             transclude: true,
@@ -4054,28 +4064,20 @@ define('validation/vld-form-group.directive',[
                 config: "=?vldFormGroup"
             },
             controller: ValidFormGroupController,
-            controllerAs: "vldGroup",
-            link: {
-                pre: preLink
-            }
+            controllerAs: "vldGroup"
         };
         return directive;
 
-        function preLink(scope, element, attr, ctrls) {
-            var vm = ctrls[0];
-            var formCtrl = ctrls[1];
-            vm.__init__(formCtrl);
-        }
     }
     /* @ngInject */
     function ValidFormGroupController() {
         var self = this;
         self.$setNgModel = $setNgModel;
-        self.__init__ = __init__;
+        self.$onInit = onInit;
 
-        function __init__(form) {
+        function onInit() {
+            self.config = self.config || {};
             var config = self.config;
-            self.form = form;
             self.dirty = config.dirty === undefined ? true : !!config.dirty;
             self.errorCls = config.errorCls || "has-error";
         }
@@ -4174,8 +4176,17 @@ define('validation/vld-message.directive',[
                 expr;
 
                 if(angular.isString(conf) || angular.isArray(conf)){
-                    errorNames = normalizeErrorNames(conf);
-                }else if(angular.isObject(conf)){
+                    conf = {
+                        "for": conf
+                    };
+                }
+                if(!conf){
+                    conf = {
+                        "for":["required"]
+                    };
+                }
+
+                if(angular.isObject(conf)){
                     action = conf.action || "visibility";
                     if(conf["for"]){
                         errorNames = normalizeErrorNames(conf["for"]);
@@ -4242,11 +4253,46 @@ define('validation/vld-message.directive',[
     }
 
 });
+define('validation/submit-btn.directive',[
+    "./validation.module",
+    "./validation.config"
+], function(app){
+    "use strict";
+    app.directive("uiSubmitBtn", submitBtnDirective);
+
+    /* @ngInject */
+    function submitBtnDirective(){
+        var directive = {
+            restrict: "A",
+            require: "^^?form",
+            link: submitBtnLink
+        };
+        return directive;
+
+        function submitBtnLink(scope, element, attrs, formCtrl){
+            if(!formCtrl){
+                formCtrl = scope.$eval(attrs.uiSubmitBtn);
+            }
+            if(!formCtrl){
+                throw new Error("uiSubmitBtn缺少表单元素");
+            }
+            element.on("click",function(){
+                var ngDisabled = attrs.ngDisabled;
+                if(ngDisabled){
+                    var disabled = scope.$eval(attrs.ngDisabled);
+                    if(disabled) return;
+                }
+                formCtrl.$submit();
+            });
+        }
+    }
+});
 define('validation/validation-require',[
     "./validation.module",
     "./validation.config",
     "./vld-form-group.directive",
-    "./vld-message.directive"
+    "./vld-message.directive",
+    "./submit-btn.directive"
 ], function(module){
     "use strict";
     return module.name;
@@ -4587,6 +4633,803 @@ define('blocks/log/log-require',[
     "use strict";
     return app.name;
 });
+define('modal/modal.module',[
+    "angular",
+    "blocks/log/log-require",
+    "../validation/validation-require"
+], function(angular, logModuleName, validationModuleName){
+    "use strict";
+    return angular.module("ngUI.modal",[logModuleName, validationModuleName]);
+});
+define('modal/modal.provider',[
+    "./modal.module"
+], function(app){
+    "use strict";
+    app.provider("$modal", ModalProvider);
+
+    /* @ngInject */
+    function ModalProvider(){
+        var self = this;
+        self.options = {
+            headerTemplateUrl: "{themed}/widget/modal/header.html",
+            footerTemplateUrl: "{themed}/widget/modal/footer.html",
+            bodyTemplateUrl: "{themed}/widget/modal/body.html",
+            controllerAs: "$ctrl"
+        };
+        self.defaultPromptLabel = "请输入：";
+        self.defaultPromptWarningMessage = "内容不能为空！";
+        self.promptHeaderTemplateUrl = "none";
+        self.promptFooterTemplateUrl = "{themed}/widget/modal/prompt-footer.html";
+        self.promptBodyTemplateUrl = "{themed}/widget/modal/prompt-body.html";
+
+        self.defaultAlertTitle = "确定要继续？";
+        self.contentTemplateUrl = "{themed}/widget/modal/content.html";
+        self.confirmFooterTemplateUrl = "{themed}/widget/modal/confirm-footer.html";
+        self.confirmHeaderTemplateUrl = "none";
+
+        self.alertHeaderTemplateUrl = "none";
+        self.alertBodyTemplateUrl = "{themed}/widget/modal/alert-body.html";
+        self.alertFooterTemplateUrl = "{themed}/widget/modal/alert-footer.html";
+
+        self.$get = instanceRef;
+        self.config = config;
+
+        function instanceRef(){
+            return self;
+        }
+
+        function config(cfg){
+            var defaultOptions = cfg.options;
+            angular.extend(self.options, defaultOptions);
+            self.defaultConfirmMessage = cfg.defaultConfirmMessage || self.defaultConfirmMessage;
+        }
+    }
+});
+define('modal/modal-content.directive',[
+    "angular",
+    "./modal.module",
+    "./modal.provider"
+], function(angular, app){
+    "use strict";
+    modalContentDirective.$inject = ["$controller", "$compile", "$modal"];
+    app.directive("uiModalContent", modalContentDirective);
+
+    /* @ngInject */
+    function modalContentDirective($controller, $compile, $modal){
+        var directive = {
+            restrict: "A",
+            require: "^^uiModal",
+            link: modalContentPostLink
+        };
+        return directive;
+
+        function modalContentPostLink(scope, element, attrs, modalCtrl){
+            var model = modalCtrl.model;
+            var controller = model.controller;
+            var controllerAs = model.controllerAs;
+
+            var _scope = scope.$new();
+            var ctrl = $controller(controller, {
+                scope: _scope,
+                $modalDirectiveCtrl: modalCtrl,
+                $modalModel: model,
+                $modalData: model.data
+            });
+            _scope[controllerAs] = ctrl;
+            _scope.contentTemplateUrl = $modal.contentTemplateUrl;
+
+            var contents = angular.element("<ng-include>");
+            element.append(contents);
+
+            contents.attr("src", "contentTemplateUrl");
+            contents.data("$ngControllerController", ctrl);
+            $compile(contents)(_scope);
+        }
+    }
+});
+define('modal/modal.directive',[
+    "angular",
+    "./modal.module",
+    "utils/random.util",
+    "./modal-content.directive"
+], function(angular, app, RandomUtils) {
+    "use strict";
+    ModalController.$inject = ["$scope", "$document", "logger", "$timeout"];
+    app.directive("uiModal", modalDirective);
+
+    /* @ngInject */
+    function modalDirective() {
+        var directive = {
+            restrict: "A",
+            templateUrl: "{themed}/widget/modal/modal.html",
+            replace: true,
+            controller: ModalController,
+            controllerAs: "$modal",
+            bindToController: {
+                model: "=uiModal"
+            }
+        };
+        return directive;
+    }
+
+    /* @ngInject */
+    function ModalController($scope, $document, logger, $timeout) {
+        var self = this;
+        var destroyTasks = [];
+        self.$onInit = init;
+        self.$onDestroy = onDestroy;
+        self.show = show;
+        self.hide = hide;
+        self.destroy = destroy;
+        self.confirm = confirm;
+
+        function init() {
+            var model = self.model;
+            self.hidden = !model.visible;
+
+            if (model.keyboard) {
+                listenKeyupEvent();
+            }
+            $scope.$watch(function(){
+                return model.visible;
+            }, function(visible) {
+                if (visible) {
+                    self.hidden = false;
+                    $timeout(function(){
+                        model.trigger("shown", model);
+                    });
+                } else {
+                    $timeout(function() {
+                        self.hidden = true;
+                    }, 500);
+                }
+            });
+            $scope.$watch(function(){
+                return self.hidden;
+            }, function(hidden){
+                if(hidden){
+                    model.trigger("hidden", model);
+                }
+                if(hidden && model.destroyOnHidden){
+                    model.destroy();
+                }
+            });
+            $scope.$watch(function(){
+                return model.destroyed;
+            }, function(destroyed) {
+                if (destroyed) {
+                    $scope.$evalAsync(function() {
+                        $scope.$destroy();
+                    });
+                }
+            });
+        }
+
+        function onDestroy() {
+            angular.forEach(destroyTasks, function(handle) {
+                try {
+                    handle();
+                } catch (e) {
+                    logger.warn("销毁模态框｛" + self.model.id + "｝异常：", e);
+                }
+            });
+        }
+
+        function listenKeyupEvent() {
+            var keyupEventName = RandomUtils.unique("keyup.");
+            var jqWin = angular.element(window);
+            jqWin.on(keyupEventName, function(event) {
+                var model = self.model;
+                if (event.key === "Escape") {
+                    switch (model.keyboard) {
+                        case "hide":
+                            model.hide();
+                            break;
+                        case true:
+                        case "destroy":
+                            model.destroy();
+                            break;
+                        default:
+                            throw new Error("invalid keyboard value: " + model.keyboard);
+                    }
+                    $scope.$apply();
+                }
+                event.preventDefault();
+            });
+            destroyTasks.push(function() {
+                jqWin.off(keyupEventName);
+            });
+        }
+
+        function hide() {
+            self.model.hide();
+        }
+
+        function show() {
+            self.model.show();
+        }
+
+        function destroy() {
+            self.model.destroy();
+        }
+        function confirm(){
+            self.model.trigger("confirm", self.model);
+        }
+    }
+});
+define('modal/modalCache',[
+    "supports/Class"
+], function(Class){
+    "use strict";
+    return Class.singleton({
+        init: function(self){
+            self.modals = {};
+        },
+        get: get,
+        put: put,
+        remove: remove
+    });
+    function get(self, page, id) {
+        var pagesModal = self.modals[page];
+        if (pagesModal && pagesModal && id !== undefined) {
+            return pagesModal[id];
+        } else {
+            return pagesModal;
+        }
+    }
+
+    function put(self, page, id, modal) {
+        var pagesModals = getOrDefault(self.modals, page);
+        if (pagesModals[id]) {
+            throw new Error("Duplicated modal id :" + id);
+        } else {
+            pagesModals[id] = modal;
+        }
+    }
+
+    function getOrDefault(obj, name) {
+        var val = obj[name];
+        if (!val) {
+            val = {};
+            obj[name] = val;
+        }
+        return val;
+    }
+
+    function remove(self, page, id) {
+        var pageModals = self.modals[page];
+        if (pageModals) {
+            if (pageModals[id]) {
+                var modal = pageModals[id];
+                modal.destroy();
+                try {
+                    delete pageModals[id];
+                } catch (e) {
+                    pageModals[id] = undefined;
+                }
+            } else {
+                for (var i in pageModals) {
+                    var modalItem = pageModals[i];
+                    if(!modalItem.destroyed){
+                        modalItem.destroy();
+                    }
+                }
+                self.modals = {};
+            }
+        }
+    }
+});
+define('modal/modal.model.factory',[
+    "./modal.module",
+    "supports/Class",
+    "event/subject",
+    "utils/random.util",
+    "./modal.provider"
+], function(app, Class, Subject, RandomUtils) {
+    "use strict";
+    moduleFactory.$inject = ["$modal"];
+    app.factory("NgUIModalModel", moduleFactory);
+
+    function moduleFactory($modal) {
+        return Class.extend(Subject, {
+            init: init,
+            show: show,
+            hide: hide,
+            destroy: destroy
+        });
+
+        function init(self, options) {
+            self.$super();
+
+            var defaultOptions = $modal.options;
+            options = angular.extend({}, defaultOptions, options);
+            /**
+             * 模态框唯一标识
+             * @type {string}
+             */
+            var id = options.id;
+            /**
+             * 模态框数据， 以$modalData形式注入模态框controller中
+             * @type {any}
+             */
+            var data = options.data;
+            /**
+             * @type {function|string}
+             */
+            var controller = options.controller;
+            /**
+             * @type {string} 默认$ctrl
+             */
+            var controllerAs = options.controllerAs;
+            /**
+             * 内容模板，
+             * @type {string}
+             */
+            var template = options.template;
+            /**
+             * 控制隐藏后是否销毁
+             * @type {boolean}
+             */
+            var destroyOnHidden = options.destroyOnHidden !== false;
+            /**
+             *头部模板地址，默认使用$modalProvider.options.headerTemplateUrl
+             * @type {string}
+             */
+            var headerTemplateUrl = options.headerTemplateUrl;
+            /**
+             *
+             * 内容模板地址，默认使用$modalProvider.options.bodyTemplateUrl
+             * @type {string}
+             */
+            var bodyTemplateUrl = options.bodyTemplateUrl;
+            /**
+             * 底部模板地址，默认使用$modalProvider.options.footerTemplateUrl
+             * @type {string}
+             */
+            var footerTemplateUrl = options.footerTemplateUrl;
+            /**
+             *
+             * 按下Esc键后的行为，true, ‘hide’都表示隐藏, destroy表示直接销毁。
+             * @type {string|boolean}
+             */
+            var keyboard = options.keyboard;
+            /**
+             * header icon css class
+             * @type {string}
+             */
+            var iconCls = options.iconCls;
+            /**
+             * .dialog-modal css class
+             * @type {string}
+             */
+            var modalCls = options.cls;
+            /**
+             * 标题
+             * @type {string}
+             */
+            var title = options.title;
+            /**
+             * 模态框宽度
+             * @type {number}
+             */
+            var width = options.width;
+            /**
+             * 控制模态框是否同时只能显示一个，如果已有oneAtTime为true的模态框显示，则当前模态框会被放入队列等待其其它被关闭
+             * @type {boolean}
+             * @default false
+             */
+            var oneAtTime = options.oneAtTime;
+            /**
+             * 是否开启拖拽
+             * @type {boolean}
+             */
+            var draggable = options.draggable;
+
+            if (!angular.isObject(data)) {
+                data = {};
+            }
+            if (data.$modal || data[controllerAs]) {
+                throw new Error("数据名称不合法");
+            }
+
+            if (angular.isUndefined(controller)) {
+                controller = angular.noop;
+            }
+            self.id = id || RandomUtils.unique("modal-");
+            self.data = data;
+            self.controller = controller;
+            self.controllerAs = controllerAs;
+            self.bodyTemplateUrl = bodyTemplateUrl;
+            self.footerTemplateUrl = footerTemplateUrl;
+            self.headerTemplateUrl = headerTemplateUrl;
+            self.destroyOnHidden = destroyOnHidden;
+            self.visible = false;
+            self.showAfterInitialized = options.show === true;
+            self.keyboard = keyboard;
+            self.destroyed = false;
+            self.template = template;
+            self.iconCls = iconCls;
+            self.title = title;
+            self.cls = modalCls;
+            self.width = width;
+            self.oneAtTime = oneAtTime === true;
+            self.draggable = draggable === true;
+        }
+
+        function show(self) {
+            if (!self.visible) {
+                self.visible = true;
+                self.trigger("show", self);
+            }
+        }
+
+        function hide(self) {
+            if (self.visible) {
+                self.visible = false;
+                self.trigger("hide", self);
+            }
+        }
+
+        function destroy(self) {
+            if (!self.destroyed) {
+                self.destroyed = true;
+            }
+        }
+    }
+});
+define('modal/modal.service',[
+    "angular",
+    "./modal.module",
+    "./modalCache",
+    "underscore",
+    "./modal.model.factory",
+    "./modal.provider"
+], function(angular, app, cache, _) {
+    "use strict";
+    PromptModalController.$inject = ["$modalModel", "$modalData"];
+    ConfirmModalController.$inject = ["$modalModel", "$modalData"];
+    ModalService.$inject = ["$rootScope", "$q", "$modal", "$location", "$rootElement", "$compile", "$timeout", "NgUIModalModel"];
+    app.service("$modals", ModalService);
+
+    /* @ngInject */
+    function PromptModalController($modalModel, $modalData) {
+        var self = this;
+        var deferer = $modalData.deferer;
+
+        angular.extend(self, $modalData.options);
+
+        self.confirm = function(inputContent) {
+            deferer.resolve(inputContent);
+            $modalModel.hide();
+        };
+        self.cancel = function() {
+            deferer.reject($modalModel);
+            $modalModel.hide();
+        };
+    }
+    /* @ngInject */
+    function ConfirmModalController($modalModel, $modalData) {
+        var deferer = $modalData.deferer;
+        this.cancel = function() {
+            $modalModel.hide();
+            deferer.reject($modalModel);
+        };
+        this.confirm = function(){
+            $modalModel.hide();
+            deferer.resolve($modalModel);
+        };
+    }
+
+    function AlertModalController($modalModel, $modalData){
+        var deferer = $modalData.deferer;
+        this.cancel = function() {
+            $modalModel.hide();
+            deferer.resolve($modalModel);
+        };
+        this.confirm = function(){
+            $modalModel.hide();
+            deferer.resolve($modalModel);
+        };
+    }
+
+    /* @ngInject */
+    function ModalService($rootScope, $q, $modal, $location, $rootElement, $compile, $timeout, NgUIModalModel) {
+        var service = this;
+        var $body = $rootElement.find("body");
+        var modalIdQueue = [];
+
+        var currentPageName;
+
+        service.create = createModal;
+        service.alert = alert;
+        service.confirm = confirm;
+        service.prompt = prompt;
+
+        activate();
+
+        function activate() {
+            currentPageName = $location.path();
+            $rootScope.$watch(function() {
+                return $location.path();
+            }, onPageSwitch);
+        }
+
+        function prompt(options) {
+            if (angular.isString(options)) {
+                options = {
+                    label: options
+                };
+                var args = arguments;
+                if (angular.isString(args[1])) {
+                    options.placeholder = args[1];
+                }
+            }
+            options = angular.extend({}, {
+                labe: $modal.defaultPromptLabel,
+                placeholder: "",
+                required: true,
+                warning: $modal.defaultPromptWarningMessage
+            }, options);
+
+            var defer = $q.defer();
+
+            createModal({
+                oneAtTime: true,
+                show: true,
+                destroyOnHidden: true,
+                headerTemplateUrl: $modal.promptHeaderTemplateUrl,
+                bodyTemplateUrl: $modal.promptBodyTemplateUrl,
+                footerTemplateUrl: $modal.promptFooterTemplateUrl,
+                data: {
+                    options: options,
+                    deferer: defer
+                },
+                controller: PromptModalController
+            });
+            return defer.promise;
+        }
+
+        function confirm(message) {
+            var defaultConfirmMessage = $modal.defaultConfirmMessage;
+            var deferer = $q.defer();
+
+            createModal({
+                template: message || defaultConfirmMessage,
+                controller: ConfirmModalController,
+                data:{
+                    deferer: deferer
+                },
+                oneAtTime: true,
+                show: true,
+                destroyOnHidden: true,
+                headerTemplateUrl: $modal.confirmHeaderTemplateUrl,
+                footerTemplateUrl: $modal.confirmFooterTemplateUrl
+            });
+            return deferer.promise;
+        }
+
+        function alert(message) {
+            var deferer = $q.defer();
+            createModal({
+                headerTemplateUrl: $modal.alertHeaderTemplateUrl,
+                footerTemplateUrl: $modal.alertFooterTemplateUrl,
+                bodyTemplateUrl: $modal.alertBodyTemplateUrl,
+                controller: AlertModalController,
+                data: {
+                    deferer: deferer
+                },
+                template: message,
+                show: true,
+                oneAtTime: true,
+                destroyOnHidden: true
+            });
+            return deferer.promise;
+        }
+
+        function onPageSwitch(currentPath, lastPath) {
+            if (currentPath === lastPath) {
+                return;
+            }
+            currentPageName = currentPath;
+            var fromStateModals = cache.get(lastPath);
+            if (fromStateModals) {
+                for (var modalId in fromStateModals) {
+                    var modal = fromStateModals[modalId];
+                    if (modal) {
+                        modal.destroy();
+                    }
+                }
+            }
+        }
+
+        function createModal(options) {
+            if (angular.isString(options)) {
+                return cache.get(currentPageName, options);
+            }
+
+            var modal = new NgUIModalModel(options);
+
+            $timeout(function() {
+                initializeModal(modal);
+            });
+            return modal;
+        }
+
+        function initializeModal(modal) {
+            var beforeCreatePageName = currentPageName;
+            cache.put(beforeCreatePageName, modal.id, modal);
+
+            var directiveElement = angular.element("<div ui-modal='model'>");
+
+            var modalScope = $rootScope.$new();
+            modalScope.model = modal;
+            modalScope.service = service;
+
+            modalScope.$on("$destroy", onDestroy);
+
+            var compiledElement = $compile(directiveElement)(modalScope);
+
+            if (modal.oneAtTime) {
+                modal.on("show", function() {
+                    if (modalIdQueue.length === 0) {
+                        service.currentId = modal.id;
+                    }
+                    if (!_.contains(modal.id)) {
+                        modalIdQueue.unshift(modal.id);
+                        // var lastIndex = modalIdQueue.length - 1;
+                        // modalIdQueue.splice(lastIndex, 1, modal.id, modalIdQueue[lastIndex]);
+                    }
+                });
+                modal.on("hidden", function() {
+                    if (modal.destroyOnHidden) {
+                        return;
+                    }
+                    showNextOne();
+                });
+                modal.on("destroy", function() {
+                    showNextOne();
+                });
+            }
+
+            modal.one("shown", function() {
+                $body.append(compiledElement);
+            });
+
+            if (modal.showAfterInitialized) {
+                modal.show();
+            }
+
+            function showNextOne() {
+                var currentIndex = _.lastIndexOf(modalIdQueue, modal.id);
+                if (currentIndex !== -1) {
+                    modalIdQueue.splice(currentIndex, 1);
+                    service.currentId = _.last(modalIdQueue);
+                }
+            }
+
+            function onDestroy() {
+                cache.remove(beforeCreatePageName, modal.id);
+                compiledElement.remove();
+                modal.trigger("destroy", modal);
+            }
+
+            $timeout(function() {
+                // 页面快速切换而模态框还未创建完，需要及时释放
+                if (beforeCreatePageName !== currentPageName) {
+                    modalScope.$destroy();
+                }
+            });
+        }
+
+    }
+});
+define('modal/modal-draggable.directive',[
+    "./modal.module",
+    "utils/random.util",
+    "underscore"
+], function(app, RandomUtil, _){
+    "use strict";
+    modalDraggableDirective.$inject = ["$document", "$window", "logger"];
+    app.directive("uiModalDraggable", modalDraggableDirective);
+
+    /* @ngInject */
+    function modalDraggableDirective($document, $window, logger){
+        var directive = {
+            restrict: "A",
+            link: draggablePostLink
+        };
+        return directive;
+
+        function draggablePostLink(scope, element, attrs){
+            var draggable = scope.$eval(attrs.uiModalDraggable);
+            if(!draggable){
+                // return;
+            }
+            attrs.$addClass("modal_draggable");
+
+            var dialog = element.closest(".modal-dialog");
+            var eventId = RandomUtil.unique(".");
+            var offsetX, offsetY;
+            var positionInitialized = false;
+            var jqWin = angular.element($window);
+
+            var winWidth = jqWin.width(), winHeight = jqWin.height();
+            var maxRight = winWidth - dialog.outerWidth(),
+                maxTop = winHeight - dialog.outerHeight();
+
+            var updatePosition = _.throttle(function(newLeft, newTop){
+                dialog.css({
+                    "left": Math.min(maxRight, Math.max(0, newLeft)),
+                    "top": Math.min(maxTop, Math.max(0,newTop))
+                });
+            }, 25);
+
+            jqWin.on("resize"+eventId, _.throttle(function(){
+                winWidth = jqWin.width();
+                winHeight = jqWin.height();
+                if(!positionInitialized){
+                    initPosition();
+                }else{
+                    var offset = dialog.offset();
+                    updatePosition(offset.left, offset.top);
+                }
+                maxRight = winWidth - dialog.outerWidth();
+                maxTop = winHeight - dialog.outerHeight();
+            }, 40));
+
+            element.on("mousedown"+eventId, function(event){
+                initPosition();
+                var offset = dialog.offset();
+
+                var pageX = event.screenX;
+                var pageY = event.screenY;
+
+                offsetX = pageX - offset.left;
+                offsetY = pageY - offset.top;
+                $document.on("mousemove"+eventId, onMouseMove);
+            });
+
+            $document.on("mouseup"+eventId, function(){
+                $document.off("mousemove"+eventId);
+            });
+            function onMouseMove(event){
+                var pageX = event.screenX;
+                var pageY = event.screenY;
+                var newLeft = pageX - offsetX;
+                var newTop = pageY - offsetY;
+
+                updatePosition(newLeft, newTop);
+            }
+            scope.$on("$destroy", function(){
+                $document.off(eventId);
+                jqWin.off(eventId);
+            });
+            function initPosition(){
+                if(positionInitialized){
+                    return;
+                }
+                positionInitialized = true;
+                var offset = dialog.offset();
+
+                dialog.css({
+                    "left": offset.left - $document.scrollLeft(),
+                    "top": offset.top - $document.scrollTop(),
+                    "margin": 0,
+                    "position": "fixed"
+                });
+            }
+        }
+    }
+});
+define('modal/modal-require',[
+    "./modal.module",
+    "./modal.directive",
+    "./modal.service",
+    "./modal-draggable.directive"
+], function(app){
+    "use strict";
+    return app.name;
+});
 (function(global, factory){
     "use strict";
     if (typeof define === "function" && define.amd){
@@ -4777,8 +5620,9 @@ define('app.module',[
     "i18n/i18n-require",
     "blocks/log/log-require",
     "ajax/ajax-require",
+    "modal/modal-require",
     "partials"
-], function(uiGridModuleName, themedModuleName, validationModuleName, i18nModuleName, logModuleName, ajaxModuleName){
+], function(uiGridModuleName, themedModuleName, validationModuleName, i18nModuleName, logModuleName, ajaxModuleName, modalModuleName){
     "use strict";
     var deps = [
         "ng",
@@ -4788,7 +5632,8 @@ define('app.module',[
         themedModuleName,
         i18nModuleName,
         logModuleName,
-        ajaxModuleName
+        ajaxModuleName,
+        modalModuleName
     ];
     return angular.module("ngUI", deps);
 });

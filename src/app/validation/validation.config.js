@@ -145,7 +145,10 @@ define([
             for (var k in errors) {
                 var models = errors[k];
                 for (var i in models) {
-                    errorModels.push(models[i]);
+                    var model = models[i];
+                    if(model.$invalid && model.$setDirty){
+                        errorModels.push(model);
+                    }
                 }
             }
             return errorModels;

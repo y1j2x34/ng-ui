@@ -10,7 +10,9 @@ define([
     function validFormGroupDirective() {
         var directive = {
             restrict: "A",
-            require: ["vldFormGroup","^^form"],
+            require: {
+                form: "^^form"
+            },
             template: "<div ng-class=\"{true:vldGroup.errorCls}[(vldGroup.dirty?vldGroup.model.$dirty: true) && vldGroup.model.$invalid]\" ng-transclude>",
             replace: true,
             transclude: true,
@@ -19,28 +21,20 @@ define([
                 config: "=?vldFormGroup"
             },
             controller: ValidFormGroupController,
-            controllerAs: "vldGroup",
-            link: {
-                pre: preLink
-            }
+            controllerAs: "vldGroup"
         };
         return directive;
 
-        function preLink(scope, element, attr, ctrls) {
-            var vm = ctrls[0];
-            var formCtrl = ctrls[1];
-            vm.__init__(formCtrl);
-        }
     }
     /* @ngInject */
     function ValidFormGroupController() {
         var self = this;
         self.$setNgModel = $setNgModel;
-        self.__init__ = __init__;
+        self.$onInit = onInit;
 
-        function __init__(form) {
+        function onInit() {
+            self.config = self.config || {};
             var config = self.config;
-            self.form = form;
             self.dirty = config.dirty === undefined ? true : !!config.dirty;
             self.errorCls = config.errorCls || "has-error";
         }

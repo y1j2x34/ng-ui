@@ -1,6 +1,6 @@
-<div class="modal-header" ng-include="$modal.model.headerTemplateUrl" ng-if="$modal.model.headerTemplateUrl !== 'none'">
+<div class="modal-header" ui-modal-draggable="$modal.model.draggable" ng-include="$modal.model.headerTemplateUrl" ng-if="$modal.model.headerTemplateUrl !== 'none'">
 </div>
 <div class="modal-body" ng-include="$modal.model.bodyTemplateUrl">
 </div>
-<div class="modal-footer" ng-include="$modal.model.footerTemplateUrl" ng-if="$modal.model.footerTemplateUrl !== 'none'">
+<div class="modal-footer" ui-modal-draggable="$modal.model.draggable" ng-include="$modal.model.footerTemplateUrl" ng-if="$modal.model.footerTemplateUrl !== 'none'">
 </div>

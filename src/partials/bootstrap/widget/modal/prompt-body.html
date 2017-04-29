@@ -1,0 +1,15 @@
+<div class="clearfix">
+    <a type="button" class="close" ng-click="$ctrl.cancel()">
+        <span aria-hidden="true">&#10005;</span>
+        <span class="sr-only">关闭</span>
+    </a>
+</div>
+<form name="$ctrl.promptForm" class="form form-horizontal clearfix" ng-submit="$ctrl.confirm($ctrl.inputContent)">
+    <div class="form-group" vld-form-group>
+        <label class="col-xs-3 control-label" ng-bind="$ctrl.label"></label>
+        <div class="col-xs-8">
+            <input type="text" name="promptInput" class="form-control" ng-model="$ctrl.inputContent" ng-required="$ctrl.required" placeholder="{{$ctrl.placeholder}}">
+            <span class="help-block" vld-message="'required'" ng-bind="$ctrl.warning.required||$ctrl.warning"></span>
+        </div>
+    </div>
+</form>

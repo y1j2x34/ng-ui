@@ -4,7 +4,7 @@ define([
     "use strict";
     app.controller("HelloController", HelloController);
 
-    function HelloController(UIGrid, UIGridStore, NgUIDatasource, $modals, logger) {
+    function HelloController(UIGrid, UIGridStore, NgUIDatasource, $timeout, $modals, logger, $q) {
         var self = this;
 
         activate();
@@ -45,6 +45,36 @@ define([
                     })
                     ;
             });
+            $modals.prompt({
+                label:"请输入您的名字：",
+                required: true,
+                placeholder: "请输入名字",
+                warning: "名字不能为空！"
+            }).then(function(content){
+                $modals.alert("用户输入了："+content);
+            }, function(){
+                $modals.alert("用户取消了");
+            });
+            setTimeout(function(){
+                console.info("000");
+            });
+            $timeout(function(){
+                console.info("bbb");
+            });
+            $timeout().then(function(){
+                console.info("aaa");
+            });
+            $timeout(function(){
+                console.info("ddd");
+            });
+            $q.when().then(function(){
+                console.info("22222");
+            });
+            setTimeout(function(){
+                console.info("1111");
+            });
+            console.info("ccc");
+
             $modals.alert("第一个Alert");
             $modals.alert("第二个Alert");
             $modals.alert("第三个Alert");

@@ -39,6 +39,10 @@ define([
              * @type {string} 默认$ctrl
              */
             var controllerAs = options.controllerAs;
+            /**
+             * 内容模板，
+             * @type {string}
+             */
             var template = options.template;
             /**
              * 控制隐藏后是否销毁
@@ -93,10 +97,11 @@ define([
              * @default false
              */
             var oneAtTime = options.oneAtTime;
-
-            if (template) {
-                bodyTemplateUrl = "{themed}/widget/modal/body.html";
-            }
+            /**
+             * 是否开启拖拽
+             * @type {boolean}
+             */
+            var draggable = options.draggable;
 
             if (!angular.isObject(data)) {
                 data = {};
@@ -126,6 +131,7 @@ define([
             self.cls = modalCls;
             self.width = width;
             self.oneAtTime = oneAtTime === true;
+            self.draggable = draggable === true;
         }
 
         function show(self) {

@@ -2,12 +2,53 @@ define([
     "angular",
     "./modal.module",
     "./modalCache",
+    "underscore",
     "./modal.model.factory",
     "./modal.provider"
-], function(angular, app, cache) {
+], function(angular, app, cache, _) {
     "use strict";
     app.service("$modals", ModalService);
 
+    /* @ngInject */
+    function PromptModalController($modalModel, $modalData) {
+        var self = this;
+        var deferer = $modalData.deferer;
+
+        angular.extend(self, $modalData.options);
+
+        self.confirm = function(inputContent) {
+            deferer.resolve(inputContent);
+            $modalModel.hide();
+        };
+        self.cancel = function() {
+            deferer.reject($modalModel);
+            $modalModel.hide();
+        };
+    }
+    /* @ngInject */
+    function ConfirmModalController($modalModel, $modalData) {
+        var deferer = $modalData.deferer;
+        this.cancel = function() {
+            $modalModel.hide();
+            deferer.reject($modalModel);
+        };
+        this.confirm = function(){
+            $modalModel.hide();
+            deferer.resolve($modalModel);
+        };
+    }
+
+    function AlertModalController($modalModel, $modalData){
+        var deferer = $modalData.deferer;
+        this.cancel = function() {
+            $modalModel.hide();
+            deferer.resolve($modalModel);
+        };
+        this.confirm = function(){
+            $modalModel.hide();
+            deferer.resolve($modalModel);
+        };
+    }
 
     /* @ngInject */
     function ModalService($rootScope, $q, $modal, $location, $rootElement, $compile, $timeout, NgUIModalModel) {
@@ -20,6 +61,7 @@ define([
         service.create = createModal;
         service.alert = alert;
         service.confirm = confirm;
+        service.prompt = prompt;
 
         activate();
 
@@ -30,17 +72,50 @@ define([
             }, onPageSwitch);
         }
 
-        function confirm(message) {
-            var defaultConfirmMessage = $modal.defaultConfirmMessage;
+        function prompt(options) {
+            if (angular.isString(options)) {
+                options = {
+                    label: options
+                };
+                var args = arguments;
+                if (angular.isString(args[1])) {
+                    options.placeholder = args[1];
+                }
+            }
+            options = angular.extend({}, {
+                labe: $modal.defaultPromptLabel,
+                placeholder: "",
+                required: true,
+                warning: $modal.defaultPromptWarningMessage
+            }, options);
+
             var defer = $q.defer();
 
-            var modal = createModal({
+            createModal({
+                oneAtTime: true,
+                show: true,
+                destroyOnHidden: true,
+                headerTemplateUrl: $modal.promptHeaderTemplateUrl,
+                bodyTemplateUrl: $modal.promptBodyTemplateUrl,
+                footerTemplateUrl: $modal.promptFooterTemplateUrl,
+                data: {
+                    options: options,
+                    deferer: defer
+                },
+                controller: PromptModalController
+            });
+            return defer.promise;
+        }
+
+        function confirm(message) {
+            var defaultConfirmMessage = $modal.defaultConfirmMessage;
+            var deferer = $q.defer();
+
+            createModal({
                 template: message || defaultConfirmMessage,
-                controller: function() {
-                    this.cancel = function() {
-                        modal.hide();
-                        defer.reject(modal);
-                    };
+                controller: ConfirmModalController,
+                data:{
+                    deferer: deferer
                 },
                 oneAtTime: true,
                 show: true,
@@ -48,28 +123,25 @@ define([
                 headerTemplateUrl: $modal.confirmHeaderTemplateUrl,
                 footerTemplateUrl: $modal.confirmFooterTemplateUrl
             });
-            modal.on("confirm", function() {
-                defer.resolve(modal);
-                modal.hide();
-            });
-            return defer.promise;
+            return deferer.promise;
         }
 
         function alert(message) {
-            var modal = createModal({
+            var deferer = $q.defer();
+            createModal({
                 headerTemplateUrl: $modal.alertHeaderTemplateUrl,
                 footerTemplateUrl: $modal.alertFooterTemplateUrl,
+                bodyTemplateUrl: $modal.alertBodyTemplateUrl,
+                controller: AlertModalController,
+                data: {
+                    deferer: deferer
+                },
                 template: message,
                 show: true,
                 oneAtTime: true,
                 destroyOnHidden: true
             });
-            var defer = $q.defer();
-            modal.on("confirm", function() {
-                defer.resolve(modal);
-                modal.hide();
-            });
-            return defer.promise;
+            return deferer.promise;
         }
 
         function onPageSwitch(currentPath, lastPath) {
@@ -120,14 +192,19 @@ define([
                     if (modalIdQueue.length === 0) {
                         service.currentId = modal.id;
                     }
-                    if(modalIdQueue.indexOf(modal.id) === -1){
+                    if (!_.contains(modal.id)) {
                         modalIdQueue.unshift(modal.id);
+                        // var lastIndex = modalIdQueue.length - 1;
+                        // modalIdQueue.splice(lastIndex, 1, modal.id, modalIdQueue[lastIndex]);
                     }
                 });
                 modal.on("hidden", function() {
+                    if (modal.destroyOnHidden) {
+                        return;
+                    }
                     showNextOne();
                 });
-                modal.on("destroy", function(){
+                modal.on("destroy", function() {
                     showNextOne();
                 });
             }
@@ -140,10 +217,11 @@ define([
                 modal.show();
             }
 
-            function showNextOne(){
-                if(modalIdQueue.indexOf(modal.id) !== -1){
-                    modalIdQueue.pop();
-                    service.currentId = modalIdQueue[modalIdQueue.length - 1];
+            function showNextOne() {
+                var currentIndex = _.lastIndexOf(modalIdQueue, modal.id);
+                if (currentIndex !== -1) {
+                    modalIdQueue.splice(currentIndex, 1);
+                    service.currentId = _.last(modalIdQueue);
                 }
             }
 

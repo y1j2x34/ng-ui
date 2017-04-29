@@ -1,0 +1,4 @@
+.modal_draggable{
+    cursor: move;
+    @include user-select(none);
+}

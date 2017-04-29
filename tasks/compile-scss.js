@@ -9,9 +9,9 @@ module.exports = function(){
             }))
             .pipe(sass({}).on("error", sass.logError))
             .pipe(sourcemap.write({
-                includeContent: true,
-                debug: false
+                includeContent: false,
+                debug: true
             }))
-            .pipe(gulp.dest("./dist"))
+            .pipe(gulp.dest("./dist/css"))
     ;
 };

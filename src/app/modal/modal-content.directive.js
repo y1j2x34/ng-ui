@@ -23,7 +23,7 @@ define([
             var _scope = scope.$new();
             var ctrl = $controller(controller, {
                 scope: _scope,
-                $modal: modalCtrl,
+                $modalDirectiveCtrl: modalCtrl,
                 $modalModel: model,
                 $modalData: model.data
             });
