@@ -10,7 +10,8 @@
                         <div class="form-group">
                             <label class="control-label col-xs-2">日期时间：</label>
                             <div class="col-xs-6">
-                                <input type="text" ng-model="self.datetime" ui-datetimepicker="{lang:'zh-CN', inline: true}">
+                                <div ng-model="self.datetime" ui-datetimepicker="{lang:'zh-CN', inline: true}">
+                                </div>
                                 <input ng-model="self.datetime" class="form-control input-small" ng-init="self.timestamp = 1491200430984" step="1000">
                             </div>
                             <div class="col-xs-4">
@@ -24,33 +25,56 @@ ctrl + shift + 滚轮 ：切换年
                         <div class="form-group">
                             <label class="control-label col-xs-2">日期：</label>
                             <div class="col-xs-7">
-                                <input type="text" ng-model="self.date" ui-datetimepicker="{lang:'zh-CN', timepicker: false, inline: true}">
+                                <div ng-model="self.date" ui-datetimepicker="{lang:'zh-CN', timepicker: false, inline: true}">
+                                </div>
                                 <input ng-model="self.date" class="form-control">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-xs-2">时间：</label>
                             <div class="col-xs-7">
-                                <input type="text" ng-model="self.time" ui-datetimepicker="{lang:'zh-CN', datepicker: false, inline:true}">
+                                <div ng-model="self.time" ui-datetimepicker="{lang:'zh-CN', datepicker: false, inline:true}">
+                                </div>
                                 <input type="text" ng-model="self.time">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-xs-2">日期时间：</label>
                             <div class="col-xs-7">
-                                <input type="text" ng-model="self.datetime" ui-datetimepicker="{lang:'en'}">
+                                <div ng-model="self.datetime" ui-datetimepicker="{lang:'en'}">
+                                    <control class="input-group">
+                                        <span class="input-group-addon">
+                                            <i class="glyphicon glyphicon-calendar"></i>
+                                        </span>
+                                        <input type="text" editable="false" class="form-control" ng-model="self.datetime">
+                                    </control>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-xs-2">日期：</label>
                             <div class="col-xs-7">
-                                <input type="text" ng-model="self.date" ui-datetimepicker="{lang:'en', timepicker: false}">
+                                <div ng-model="self.date" ui-datetimepicker="{lang:'en', timepicker: false}">
+                                    <control class="input-group">
+                                        <span class="input-group-addon">
+                                            <i class="glyphicon glyphicon-calendar"></i>
+                                        </span>
+                                        <input type="text" editable="false" class="form-control" ng-model="self.date">
+                                    </control>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-xs-2">时间：</label>
                             <div class="col-xs-7">
-                                <input type="text" ng-model="self.time" ui-datetimepicker="{lang:'en', datepicker: false}">
+                                <div ng-model="self.time" ui-datetimepicker="{lang:'en', datepicker: false}">
+                                    <control class="input-group">
+                                        <span class="input-group-addon">
+                                            <i class="glyphicon glyphicon-time"></i>
+                                        </span>
+                                        <input type="text" editable="false" class="form-control" ng-model="self.time">
+                                    </control>
+                                </div>
                             </div>
                         </div>
                     </div>

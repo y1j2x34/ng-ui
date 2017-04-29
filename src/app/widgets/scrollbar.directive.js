@@ -1,9 +1,10 @@
 define([
     "./widget.module",
     "angular",
+    "underscore",
     "utils/random.util",
     "jquery.scrollbar"
-], function(app, angular, RandomUtil) {
+], function(app, angular, _, RandomUtil) {
     "use strict";
 
     app.directive("uiScrollbar", scrollbarDirective);
@@ -40,6 +41,7 @@ define([
 
         function preLink($scope, element, attrs) {
             $scope._element = element[0];
+            var lazyUpdateOption = _.debounce(updateOnOptionsChange,1000/25);
             var jqWindow = angular.element($window);
             var optionUpdated = false;
 
@@ -54,7 +56,7 @@ define([
 
             $scope.$watch("options", function(options){
                 if(options || !optionUpdated){
-                    updateOnOptionsChange(options);
+                    lazyUpdateOption(options);
                     optionUpdated = true;
                 }
             }, true);

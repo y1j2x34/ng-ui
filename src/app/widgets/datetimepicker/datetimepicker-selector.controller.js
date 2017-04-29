@@ -1,9 +1,9 @@
 define([
     "../widget.module",
-    "var/noop",
+    "underscore",
     "moment",
     "angular"
-], function(app, noop, moment, angular){
+], function(app, _, moment, angular){
     "use strict";
     var isNumber = angular.isNumber;
 
@@ -13,7 +13,7 @@ define([
     function DatetimepickerController($scope){
         var self = this;
         self.locale = locale;
-        self.directivePostLink = noop;
+        self.directivePostLink = _.noop;
         self.directivePreLink = directivePreLink;
         self.changeSeconds = changeSeconds;
         self.changeMinute = changeMinute;

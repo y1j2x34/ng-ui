@@ -5,8 +5,9 @@ define([
     "i18n/i18n-require",
     "blocks/log/log-require",
     "ajax/ajax-require",
+    "modal/modal-require",
     "partials"
-], function(uiGridModuleName, themedModuleName, validationModuleName, i18nModuleName, logModuleName, ajaxModuleName){
+], function(uiGridModuleName, themedModuleName, validationModuleName, i18nModuleName, logModuleName, ajaxModuleName, modalModuleName){
     "use strict";
     var deps = [
         "ng",
@@ -16,7 +17,8 @@ define([
         themedModuleName,
         i18nModuleName,
         logModuleName,
-        ajaxModuleName
+        ajaxModuleName,
+        modalModuleName
     ];
     return angular.module("ngUI", deps);
 });

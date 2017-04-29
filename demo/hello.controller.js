@@ -4,12 +4,50 @@ define([
     "use strict";
     app.controller("HelloController", HelloController);
 
-    function HelloController(UIGrid, UIGridStore, NgUIDatasource) {
+    function HelloController(UIGrid, UIGridStore, NgUIDatasource, $modals, logger) {
         var self = this;
 
         activate();
 
         function activate() {
+            var modal = $modals.create({
+                keyboard: true,
+                show: true,
+                template: "成功！",
+                title: "模态框标题",
+                iconCls: "glyphicon glyphicon-list",
+                cls: "inline"
+            });
+            var index = 0;
+            modal.on("show", function(){
+                logger.info("modal show", index++);
+            });
+            modal.on("shown", function(){
+                logger.info("modal shown", index++);
+            });
+            modal.on("hide", function(){
+                logger.info("modal hide", index++);
+            });
+            modal.on("hidden", function(){
+                logger.info("modal hidden", index++);
+            });
+            modal.on("confirm", function(){
+                modal.destroy();
+            });
+            modal.on("destroy", function(){
+                logger.info("modal destroyed", index++);
+                $modals
+                    .confirm("哈哈哈")
+                    .then(function(){
+                        $modals.alert("用户确定了");
+                    }, function(){
+                        $modals.alert("用户取消了");
+                    })
+                    ;
+            });
+            $modals.alert("第一个Alert");
+            $modals.alert("第二个Alert");
+            $modals.alert("第三个Alert");
             self.treeData = [{
                 id: "0",
                 text: "Animal",

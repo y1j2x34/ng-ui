@@ -1,0 +1,10 @@
+<div id="{{$modal.model.id}}">
+    <div ng-if="!($modal.model.oneAtTime && $modal.model.id !== service.currentId)">
+        <div class="modal-backdrop fade" ng-class="{in:$modal.model.visible}"> </div>
+        <div class="modal fade"  ng-class="{'in':$modal.model.visible,'show': !$modal.hidden}" tabindex="-1" modal-id="{{$modal.model.id}}" role="dialog" >
+            <div class="modal-dialog" ng-class="$modal.model.cls" ng-style="{width:$modal.model.width}">
+                <div class="modal-content" ui-modal-content> </div>
+            </div>
+        </div>
+    </div>
+</div>

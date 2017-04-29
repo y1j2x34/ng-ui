@@ -1,0 +1,8 @@
+<a type="button" class="close" ng-click="$modal.hide()">
+    <span aria-hidden="true">&#10005;</span>
+    <span class="sr-only">关闭</span>
+</a>
+<h4 class="modal-title">
+    <i class="{{$modal.model.iconCls}}" ng-if="$modal.model.iconCls !== undefined"></i>
+    <span ng-bind="$modal.model.title"></span>
+</h4>

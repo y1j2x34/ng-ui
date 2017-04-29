@@ -24,6 +24,9 @@ define([
             restrict: "A",
             require: ["uiDatetimepicker", "ngModel"],
             templateUrl: "{themed}/widget/datetimepicker.html",
+            transclude:{
+                control: "?control"
+            },
             replace: true,
             scope: true,
             bindToController: {
