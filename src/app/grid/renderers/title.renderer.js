@@ -1,7 +1,7 @@
 define([
     "jquery",
-    "var/noop"
-], function($, noop){
+    "angular"
+], function($, angular){
     "use strict";
     return {
         type: "cell",
@@ -13,6 +13,6 @@ define([
             $cont.text(options.value);
             options.element.prepend($cont);
         },
-        row: noop
+        row: angular.noop
     };
 });

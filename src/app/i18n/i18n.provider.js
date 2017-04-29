@@ -1,9 +1,8 @@
 define([
     "angular",
     "./i18n.module",
-    "underscore",
-    "var/noop"
-], function(angular, app, _, noop){
+    "underscore"
+], function(angular, app, _){
     "use strict";
     app.provider("$i18n", I18nProvider);
 
@@ -28,7 +27,7 @@ define([
                 compiler: function(lang, key){
                     var message = self.obj.getMessage(lang, key);
                     if(!message){
-                        return noop;
+                        return angular.noop;
                     }
                     var templateMap = compilers[lang];
                     if(!templateMap){

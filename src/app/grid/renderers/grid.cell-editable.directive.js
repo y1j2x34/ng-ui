@@ -1,6 +1,5 @@
 define([
-    "../grid.module",
-    "var/noop"
+    "../grid.module"
 ], function(app){
     "use strict";
     app.directive("uiGridCellEditable", gridCellEditableDirective);

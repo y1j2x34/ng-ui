@@ -1,12 +1,12 @@
 define([
+    "angular",
     "./grid.module",
     "underscore",
     "utils/random.util",
     "supports/Class",
     "event/subject",
-    "var/noop",
     "./store/store.factory"
-], function(app, _, RandomUtil, Class, Subject, noop) {
+], function(angular, app, _, RandomUtil, Class, Subject) {
     "use strict";
 
     app.factory("UIGrid", gridFactory);
@@ -137,13 +137,13 @@ define([
                                 def: def,
                                 name: renderersDef.name,
                                 priority: renderersDef.priority,
-                                render: renderersDef.row || noop
+                                render: renderersDef.row || angular.noop
                             });
                             headerRenderers.push({
                                 def: def,
                                 name: renderersDef.name,
                                 priority: renderersDef.priority,
-                                render: renderersDef.header || noop
+                                render: renderersDef.header || angular.noop
                             });
                         }
                     }
@@ -183,7 +183,7 @@ define([
                     renderers: [{
                         name: rendererDef.name,
                         priority: rendererDef.priority,
-                        render: rendererDef.header || noop
+                        render: rendererDef.header || angular.noop
                     }],
                     def: def
                 });
@@ -193,7 +193,7 @@ define([
                     renderers: [{
                         name: rendererDef.name,
                         priority: rendererDef.priority,
-                        render: rendererDef.row || noop
+                        render: rendererDef.row || angular.noop
                     }],
                     def: def
                 });

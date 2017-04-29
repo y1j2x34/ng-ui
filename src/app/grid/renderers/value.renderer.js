@@ -1,13 +1,13 @@
 define([
     "jquery",
-    "var/noop"
-], function($, noop) {
+    "angular"
+], function($, angular) {
     "use strict";
     return {
         type: "cell",
         name: "value",
         priority: 0,
-        header: noop,
+        header: angular,
         row: function(options) {
             var element = options.element;
             element.addClass("grid_value");

@@ -1,8 +1,7 @@
 define([
-    "./grid.module",
-    "var/noop",
-    "underscore"
-], function(app, noop, _) {
+    "angular",
+    "./grid.module"
+], function(angular, app) {
     "use strict";
     app.directive("uiGridRow", gridRowDirective);
 
@@ -11,7 +10,7 @@ define([
         var directive = {
             restrict: "A",
             require: "^^uiGrid",
-            controller: noop,
+            controller: angular.noop,
             controllerAs: "rowCtrl",
             link: postLink
         };
@@ -25,7 +24,7 @@ define([
 
             var rowRenderers = grid.getRowRenderers();
 
-            _.each(rowRenderers, function(renderer){
+            angular.forEach(rowRenderers, function(renderer){
                 renderer.render({
                     element: element,
                     value: renderer.def,

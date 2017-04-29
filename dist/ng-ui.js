@@ -1,9 +1,13 @@
-define('widgets/widget.module',[
-    "angular",
-    "jquery"
+define('blocks/log/log.module',[
+    "angular"
 ],function(angular){
     "use strict";
-    return angular.module("ngUI.widget", []);
+    var moduleName = "ngUI.log";
+    try{
+        return angular.module(moduleName, []);
+    }catch(e){
+        return angular.module(moduleName);
+    }
 });
 (function(factory){
     "use strict";
@@ -298,6 +302,295 @@ define('widgets/widget.module',[
     function noop() {}
 });
 
+define('blocks/log/configure',[
+    "supports/Class"
+], function(Class) {
+    "use strict";
+
+    var LEVEL_NO = {
+        "error": 80000,
+        "warn": 40000,
+        "info": 20000,
+        "debug": 0,
+        "log": NaN
+    };
+
+    return Class.singleton({
+        name: "LoggerConfigure",
+        init: function(self) {
+            self.level = LEVEL_NO.debug;
+        },
+        isLoggable: isLoggable,
+        config: config,
+        $setLogger: function(self, Logger){
+            self.Logger = Logger;
+            Logger.$updateLogLevel();
+        }
+    });
+
+    function config(self, options) {
+        if (!options) {
+            return;
+        }
+        var levelName = options.level;
+        var levelNo = LEVEL_NO[levelName];
+        if (levelNo !== undefined && self.level !== levelNo) {
+            self.level = levelNo;
+            var Logger = self.Logger;
+            if(Logger){
+                Logger.$updateLogLevel();
+            }
+        }
+    }
+
+    function isLoggable(self, levelName) {
+        var levelNo = LEVEL_NO[levelName];
+        return levelNo >= self.level || levelName === "log";
+    }
+});
+define('blocks/log/logger',[
+    "supports/Class",
+    "./configure"
+],function(Class, configure){
+    "use strict";
+
+    var console = window.console;
+    var requestIdleCallback = window.requestIdleCallback || function(callback){
+        var timmerId = window.setTimeout(function(){
+            window.clearTimeout(timmerId);
+            callback();
+        },0);
+    };
+
+    var LOG_LEVELS = ["debug", "info", "warn", "error", "log"];
+
+    var Logger = Class.singleton("Logger", {
+        $updateLogLevel: onUpdateLogLevel,
+        log: wrapper("log"),
+        isDebugEnabled: isDebugEnabled,
+        isInfoEnabled: isInfoEnabled,
+        isWarnEnabled: isWarnEnabled,
+        isErrorEnabled: isErrorEnabled
+    });
+    configure.$setLogger(Logger);
+    return Logger;
+
+    function onUpdateLogLevel(){
+        for(var i =LOG_LEVELS.length-2;i >= 0; i--){
+            var logLevelName = LOG_LEVELS[i];
+            Logger[logLevelName] = wrapper(logLevelName);
+        }
+    }
+
+    function isDebugEnabled(){
+        return configure.isLoggable("debug");
+    }
+    function isInfoEnabled(){
+        return configure.isLoggable("debug");
+    }
+    function isWarnEnabled(){
+        return configure.isLoggable("warn");
+    }
+    function isErrorEnabled(){
+        return true;
+    }
+
+    function wrapper(levelName){
+        if(configure.isLoggable(levelName)){
+            return function(self){
+                var stack = new Error().stack;
+                var _args = arguments;
+                requestIdleCallback(function(){
+                   var stacks;
+                   if(!stack){
+                       stacks = ["<unknown>", "<unknown>", "at <unknown>"];
+                   }else{
+                       stacks = stack.split("\n");
+                   }
+                   var args = Array.prototype.slice.apply(_args);
+                   log.call(self, levelName, stacks, args);
+                });
+            };
+        }else{
+            return noop;
+        }
+    }
+    function log(level, stacks, args) {
+        var place = stacks[2];
+        var file;
+        var method;
+        var indexOfBracket = place.indexOf("(");
+        if(indexOfBracket !== -1){
+            file = place.substring(place.indexOf('(') + 1, place.length - 1);
+            method = place.substring(place.indexOf('at') + 3, indexOfBracket - 1);
+        }else{
+            file = place.substring(place.indexOf('at') + 3);
+            method = "<anonymous>";
+        }
+
+        var loc = "Location: " + method + " (" + file + ")";
+
+        var _logr = console[level] || noop;
+        if (!_logr) {
+            console.error("错误的日志级别：" + level);
+            return;
+        }
+        args.push("\n"+loc);
+        _logr.apply(console, args);
+    }
+    function noop(){}
+});
+define('blocks/log/log.provider',[
+    "./log.module",
+    "./configure"
+], function(app, LoggerConfigure){
+    "use strict";
+
+    LoggerProvider.prototype = LoggerConfigure;
+
+    app.provider("$logger", LoggerProvider);
+
+    function LoggerProvider(){
+        var self = this;
+        self.$get = function(){
+            return LoggerConfigure;
+        };
+    }
+});
+define('blocks/log/log.factory',[
+    "./log.module",
+    "./log.provider"
+], function(app){
+    "use strict";
+    loggerFactory.$inject = ["$logger"];
+    app.factory("logger", loggerFactory);
+    /* @ngInject */
+    function loggerFactory($logger){
+        return $logger.Logger;
+    }
+});
+define('blocks/log/log-require',[
+    "./log.module",
+    "./logger",
+    "./log.provider",
+    "./log.factory"
+], function(app){
+    "use strict";
+    return app.name;
+});
+define('themed/themed.module',[
+    "angular"
+], function(angular){
+    "use strict";
+    return angular.module("ngUI.theme", []);
+});
+define('themed/themed.provider',[
+    "./themed.module"
+], function(app){
+    "use strict";
+
+    app.provider("$themed", ThemeProvider);
+
+    /* @ngInject */
+    function ThemeProvider(){
+        var self = this;
+
+        self.config = config;
+        activate();
+
+        function activate(){
+            self.config({
+                name: "bootstrap",
+                validation: {
+
+                }
+            });
+        }
+
+        self.$get = function(){
+            return self;
+        };
+
+        function config(options){
+            if(!options){
+                return;
+            }
+            self.name = options.name || self.name;
+            self.baseUrl = options.baseUrl || "/src/partials/" + self.name;
+        }
+    }
+});
+define('themed/themed.config',[
+    "./themed.module",
+    "angular",
+    "./themed-require",
+], function(app, angular){
+    "use strict";
+
+    decorateConfigure.$inject = ["$provide", "$themedProvider"];
+    app.config(decorateConfigure);
+
+    /* @ngInject */
+    function decorateConfigure($provide, $themedProvider){
+        decorateTemplateRequest.$inject = ["$delegate"];
+        decorateTemplateCahce.$inject = ["$delegate"];
+        $provide.decorator("$templateRequest", decorateTemplateRequest);
+        $provide.decorator("$templateCache", decorateTemplateCahce);
+
+        /* @ngInject */
+        function decorateTemplateRequest($delegate){
+            return angular.extend(function(tpl, ignoreRequestError){
+                tpl = replace(tpl);
+                return $delegate.call(this, tpl, ignoreRequestError);
+            }, $delegate);
+        }
+        /* @ngInject */
+        function decorateTemplateCahce($delegate){
+            var _get = $delegate.get;
+           var _has = $delegate.has;
+           var _remove = $delegate.remove;
+           var _put = $delegate.put;
+
+           $delegate.get = function(key){
+               return _get.call($delegate, replace(key));
+           };
+           $delegate.has = function(key){
+               return _has.call($delegate, replace(key));
+           };
+           $delegate.put = function(key, value){
+               return _put.call($delegate, key, value);
+           };
+           $delegate.remove = function(key){
+               return _remove.call($delegate, replace(key));
+           };
+           return $delegate;
+        }
+
+        function replace(templateUrl){
+            if(templateUrl){
+                return templateUrl.replace("{themed}", $themedProvider.baseUrl);
+            }
+            return templateUrl;
+        }
+    }
+});
+define('themed/themed-require',[
+    "./themed.module",
+    "./themed.provider",
+    "./themed.config"
+],function(app){
+    "use strict";
+    return app.name;
+});
+define('widgets/widget.module',[
+    "angular",
+    "blocks/log/log-require",
+    "themed/themed-require",
+    "jquery",
+], function(angular, logModuleName, themedModuleName) {
+    "use strict";
+    return angular.module("ngUI.widget", [logModuleName, themedModuleName]);
+});
 define('utils/random.util',[
     "../supports/Class"
 ],function(Class){
@@ -956,11 +1249,11 @@ define('widgets/spinner.directive',[
     }
 });
 define('widgets/datetimepicker/datetimepicker-selector.controller',[
+    "angular",
     "../widget.module",
     "underscore",
-    "moment",
-    "angular"
-], function(app, _, moment, angular){
+    "moment"
+], function(angular, app, moment){
     "use strict";
     DatetimepickerController.$inject = ["$scope"];
     var isNumber = angular.isNumber;
@@ -971,7 +1264,7 @@ define('widgets/datetimepicker/datetimepicker-selector.controller',[
     function DatetimepickerController($scope){
         var self = this;
         self.locale = locale;
-        self.directivePostLink = _.noop;
+        self.directivePostLink = angular.noop;
         self.directivePreLink = directivePreLink;
         self.changeSeconds = changeSeconds;
         self.changeMinute = changeMinute;
@@ -1949,32 +2242,30 @@ define('grid/grid.module',[
     "angular",
     "widgets/widgets-require",
     "ajax/ajax-require",
+    "themed/themed-require",
     "angular-sanitize",
     "underscore",
     "jquery"
-], function(angular, widgetModuleName, ajaxModuleName){
+], function(angular, widgetModuleName, ajaxModuleName, themedModuleName) {
     "use strict";
     return angular.module("ngUI.grid", [
         "ng",
         "ngSanitize",
         widgetModuleName,
-        ajaxModuleName
+        ajaxModuleName,
+        themedModuleName
     ]);
-});
-define('var/noop',[],function(){
-    "use strict";
-    return function noop(){};
 });
 define('grid/renderers/value.renderer',[
     "jquery",
-    "var/noop"
-], function($, noop) {
+    "angular"
+], function($, angular) {
     "use strict";
     return {
         type: "cell",
         name: "value",
         priority: 0,
-        header: noop,
+        header: angular,
         row: function(options) {
             var element = options.element;
             element.addClass("grid_value");
@@ -1986,8 +2277,8 @@ define('grid/renderers/value.renderer',[
 });
 define('grid/renderers/title.renderer',[
     "jquery",
-    "var/noop"
-], function($, noop){
+    "angular"
+], function($, angular){
     "use strict";
     return {
         type: "cell",
@@ -1999,7 +2290,7 @@ define('grid/renderers/title.renderer',[
             $cont.text(options.value);
             options.element.prepend($cont);
         },
-        row: noop
+        row: angular.noop
     };
 });
 define('grid/renderers/grid.accordion.directive',[
@@ -2192,8 +2483,7 @@ define('grid/renderers/stripe.renderer',[],function(){
     };
 });
 define('grid/renderers/grid.cell-editable.directive',[
-    "../grid.module",
-    "var/noop"
+    "../grid.module"
 ], function(app){
     "use strict";
     app.directive("uiGridCellEditable", gridCellEditableDirective);
@@ -2214,15 +2504,15 @@ define('grid/renderers/grid.cell-editable.directive',[
 });
 define('grid/renderers/editable.renderer',[
     "jquery",
-    "var/noop",
+    "angular",
     "./grid.cell-editable.directive"
-], function($, noop){
+], function($, angular){
     "use strict";
     return {
         type:"cell",
         name: "editable",
         priority: 100,
-        header: noop,
+        header: angular.noop,
         row: function(options){
             options.element.append("<div ui-grid-cell-editable>");
         }
@@ -3142,14 +3432,14 @@ define('grid/store/store.factory',[
 });
 
 define('grid/grid.factory',[
+    "angular",
     "./grid.module",
     "underscore",
     "utils/random.util",
     "supports/Class",
     "event/subject",
-    "var/noop",
     "./store/store.factory"
-], function(app, _, RandomUtil, Class, Subject, noop) {
+], function(angular, app, _, RandomUtil, Class, Subject) {
     "use strict";
 
     gridFactory.$inject = ["$grid", "$q", "UIGridStore"];
@@ -3281,13 +3571,13 @@ define('grid/grid.factory',[
                                 def: def,
                                 name: renderersDef.name,
                                 priority: renderersDef.priority,
-                                render: renderersDef.row || noop
+                                render: renderersDef.row || angular.noop
                             });
                             headerRenderers.push({
                                 def: def,
                                 name: renderersDef.name,
                                 priority: renderersDef.priority,
-                                render: renderersDef.header || noop
+                                render: renderersDef.header || angular.noop
                             });
                         }
                     }
@@ -3327,7 +3617,7 @@ define('grid/grid.factory',[
                     renderers: [{
                         name: rendererDef.name,
                         priority: rendererDef.priority,
-                        render: rendererDef.header || noop
+                        render: rendererDef.header || angular.noop
                     }],
                     def: def
                 });
@@ -3337,7 +3627,7 @@ define('grid/grid.factory',[
                     renderers: [{
                         name: rendererDef.name,
                         priority: rendererDef.priority,
-                        render: rendererDef.row || noop
+                        render: rendererDef.row || angular.noop
                     }],
                     def: def
                 });
@@ -3699,10 +3989,9 @@ define('grid/grid.row-cell.directive',[
     }
 });
 define('grid/grid.row.directive',[
-    "./grid.module",
-    "var/noop",
-    "underscore"
-], function(app, noop, _) {
+    "angular",
+    "./grid.module"
+], function(angular, app) {
     "use strict";
     app.directive("uiGridRow", gridRowDirective);
 
@@ -3711,7 +4000,7 @@ define('grid/grid.row.directive',[
         var directive = {
             restrict: "A",
             require: "^^uiGrid",
-            controller: noop,
+            controller: angular.noop,
             controllerAs: "rowCtrl",
             link: postLink
         };
@@ -3725,7 +4014,7 @@ define('grid/grid.row.directive',[
 
             var rowRenderers = grid.getRowRenderers();
 
-            _.each(rowRenderers, function(renderer){
+            angular.forEach(rowRenderers, function(renderer){
                 renderer.render({
                     element: element,
                     value: renderer.def,
@@ -3784,55 +4073,6 @@ define('grid/grid-require',[
     "./grid.config",
     "./grid.directive"
 ], function(app){
-    "use strict";
-    return app.name;
-});
-define('themed/themed.module',[
-    "angular"
-], function(angular){
-    "use strict";
-    return angular.module("ngUI.theme", []);
-});
-define('themed/themed.provider',[
-    "./themed.module"
-], function(app){
-    "use strict";
-
-    app.provider("$themed", ThemeProvider);
-
-    /* @ngInject */
-    function ThemeProvider(){
-        var self = this;
-
-        self.config = config;
-        activate();
-
-        function activate(){
-            self.config({
-                name: "bootstrap",
-                validation: {
-
-                }
-            });
-        }
-
-        self.$get = function(){
-            return self;
-        };
-
-        function config(options){
-            if(!options){
-                return;
-            }
-            self.name = options.name || self.name;
-            self.baseUrl = options.baseUrl || "/src/partials/" + self.name;
-        }
-    }
-});
-define('themed/themed-require',[
-    "./themed.module",
-    "./themed.provider"
-],function(app){
     "use strict";
     return app.name;
 });
@@ -4306,9 +4546,8 @@ define('i18n/i18n.module',[
 define('i18n/i18n.provider',[
     "angular",
     "./i18n.module",
-    "underscore",
-    "var/noop"
-], function(angular, app, _, noop){
+    "underscore"
+], function(angular, app, _){
     "use strict";
     app.provider("$i18n", I18nProvider);
 
@@ -4333,7 +4572,7 @@ define('i18n/i18n.provider',[
                 compiler: function(lang, key){
                     var message = self.obj.getMessage(lang, key);
                     if(!message){
-                        return noop;
+                        return angular.noop;
                     }
                     var templateMap = compilers[lang];
                     if(!templateMap){
@@ -4446,200 +4685,20 @@ define('i18n/i18n-require',[
     "use strict";
     return app.name;
 });
-define('blocks/log/log.module',[
-    "angular"
-],function(angular){
-    "use strict";
-    var moduleName = "ngUI.log";
-    try{
-        return angular.module(moduleName, []);
-    }catch(e){
-        return angular.module(moduleName);
-    }
-});
-define('blocks/log/configure',[
-    "supports/Class"
-], function(Class) {
-    "use strict";
-
-    var LEVEL_NO = {
-        "error": 80000,
-        "warn": 40000,
-        "info": 20000,
-        "debug": 0,
-        "log": NaN
-    };
-
-    return Class.singleton({
-        name: "LoggerConfigure",
-        init: function(self) {
-            self.level = LEVEL_NO.debug;
-        },
-        isLoggable: isLoggable,
-        config: config,
-        $setLogger: function(self, Logger){
-            self.Logger = Logger;
-            Logger.$updateLogLevel();
-        }
-    });
-
-    function config(self, options) {
-        if (!options) {
-            return;
-        }
-        var levelName = options.level;
-        var levelNo = LEVEL_NO[levelName];
-        if (levelNo !== undefined && self.level !== levelNo) {
-            self.level = levelNo;
-            var Logger = self.Logger;
-            if(Logger){
-                Logger.$updateLogLevel();
-            }
-        }
-    }
-
-    function isLoggable(self, levelName) {
-        var levelNo = LEVEL_NO[levelName];
-        return levelNo >= self.level || levelName === "log";
-    }
-});
-define('blocks/log/logger',[
-    "supports/Class",
-    "./configure"
-],function(Class, configure){
-    "use strict";
-
-    var console = window.console;
-    var requestIdleCallback = window.requestIdleCallback || function(callback){
-        var timmerId = window.setTimeout(function(){
-            window.clearTimeout(timmerId);
-            callback();
-        },0);
-    };
-
-    var LOG_LEVELS = ["debug", "info", "warn", "error", "log"];
-
-    var Logger = Class.singleton("Logger", {
-        $updateLogLevel: onUpdateLogLevel,
-        log: wrapper("log"),
-        isDebugEnabled: isDebugEnabled,
-        isInfoEnabled: isInfoEnabled,
-        isWarnEnabled: isWarnEnabled,
-        isErrorEnabled: isErrorEnabled
-    });
-    configure.$setLogger(Logger);
-    return Logger;
-
-    function onUpdateLogLevel(){
-        for(var i =LOG_LEVELS.length-2;i >= 0; i--){
-            var logLevelName = LOG_LEVELS[i];
-            Logger[logLevelName] = wrapper(logLevelName);
-        }
-    }
-
-    function isDebugEnabled(){
-        return configure.isLoggable("debug");
-    }
-    function isInfoEnabled(){
-        return configure.isLoggable("debug");
-    }
-    function isWarnEnabled(){
-        return configure.isLoggable("warn");
-    }
-    function isErrorEnabled(){
-        return true;
-    }
-
-    function wrapper(levelName){
-        if(configure.isLoggable(levelName)){
-            return function(self){
-                var stack = new Error().stack;
-                var _args = arguments;
-                requestIdleCallback(function(){
-                   var stacks;
-                   if(!stack){
-                       stacks = ["<unknown>", "<unknown>", "at <unknown>"];
-                   }else{
-                       stacks = stack.split("\n");
-                   }
-                   var args = Array.prototype.slice.apply(_args);
-                   log.call(self, levelName, stacks, args);
-                });
-            };
-        }else{
-            return noop;
-        }
-    }
-    function log(level, stacks, args) {
-        var place = stacks[2];
-        var file;
-        var method;
-        var indexOfBracket = place.indexOf("(");
-        if(indexOfBracket !== -1){
-            file = place.substring(place.indexOf('(') + 1, place.length - 1);
-            method = place.substring(place.indexOf('at') + 3, indexOfBracket - 1);
-        }else{
-            file = place.substring(place.indexOf('at') + 3);
-            method = "<anonymous>";
-        }
-
-        var loc = "Location: " + method + " (" + file + ")";
-
-        var _logr = console[level] || noop;
-        if (!_logr) {
-            console.error("错误的日志级别：" + level);
-            return;
-        }
-        args.push("\n"+loc);
-        _logr.apply(console, args);
-    }
-    function noop(){}
-});
-define('blocks/log/log.provider',[
-    "./log.module",
-    "./configure"
-], function(app, LoggerConfigure){
-    "use strict";
-
-    LoggerProvider.prototype = LoggerConfigure;
-
-    app.provider("$logger", LoggerProvider);
-
-    function LoggerProvider(){
-        var self = this;
-        self.$get = function(){
-            return LoggerConfigure;
-        };
-    }
-});
-define('blocks/log/log.factory',[
-    "./log.module",
-    "./log.provider"
-], function(app){
-    "use strict";
-    loggerFactory.$inject = ["$logger"];
-    app.factory("logger", loggerFactory);
-    /* @ngInject */
-    function loggerFactory($logger){
-        return $logger.Logger;
-    }
-});
-define('blocks/log/log-require',[
-    "./log.module",
-    "./logger",
-    "./log.provider",
-    "./log.factory"
-], function(app){
-    "use strict";
-    return app.name;
-});
 define('modal/modal.module',[
     "angular",
     "blocks/log/log-require",
-    "../validation/validation-require"
-], function(angular, logModuleName, validationModuleName){
+    "validation/validation-require",
+    "themed/themed-require",
+    "angular-sanitize",
+], function(angular, logModuleName, validationModuleName, themedModuleName) {
     "use strict";
-    return angular.module("ngUI.modal",[logModuleName, validationModuleName]);
+    return angular.module("ngUI.modal", [
+        "ngSanitize",
+        logModuleName,
+        validationModuleName,
+        themedModuleName
+    ]);
 });
 define('modal/modal.provider',[
     "./modal.module"
@@ -5329,11 +5388,11 @@ define('modal/modal-draggable.directive',[
     "underscore"
 ], function(app, RandomUtil, _){
     "use strict";
-    modalDraggableDirective.$inject = ["$document", "$window", "logger"];
+    modalDraggableDirective.$inject = ["$document", "$window"];
     app.directive("uiModalDraggable", modalDraggableDirective);
 
     /* @ngInject */
-    function modalDraggableDirective($document, $window, logger){
+    function modalDraggableDirective($document, $window){
         var directive = {
             restrict: "A",
             link: draggablePostLink
@@ -5343,7 +5402,7 @@ define('modal/modal-draggable.directive',[
         function draggablePostLink(scope, element, attrs){
             var draggable = scope.$eval(attrs.uiModalDraggable);
             if(!draggable){
-                // return;
+                return;
             }
             attrs.$addClass("modal_draggable");
 
@@ -5638,60 +5697,6 @@ define('app.module',[
     return angular.module("ngUI", deps);
 });
 
-define('init/themed.config',[
-    "../app.module",
-    "angular",
-    "../themed/themed-require",
-], function(app, angular){
-    "use strict";
-
-    decorateConfigure.$inject = ["$provide", "$themedProvider"];
-    app.config(decorateConfigure);
-
-    /* @ngInject */
-    function decorateConfigure($provide, $themedProvider){
-        decorateTemplateRequest.$inject = ["$delegate"];
-        decorateTemplateCahce.$inject = ["$delegate"];
-        $provide.decorator("$templateRequest", decorateTemplateRequest);
-        $provide.decorator("$templateCache", decorateTemplateCahce);
-
-        /* @ngInject */
-        function decorateTemplateRequest($delegate){
-            return angular.extend(function(tpl, ignoreRequestError){
-                tpl = replace(tpl);
-                return $delegate.call(this, tpl, ignoreRequestError);
-            }, $delegate);
-        }
-        /* @ngInject */
-        function decorateTemplateCahce($delegate){
-            var _get = $delegate.get;
-           var _has = $delegate.has;
-           var _remove = $delegate.remove;
-           var _put = $delegate.put;
-
-           $delegate.get = function(key){
-               return _get.call($delegate, replace(key));
-           };
-           $delegate.has = function(key){
-               return _has.call($delegate, replace(key));
-           };
-           $delegate.put = function(key, value){
-               return _put.call($delegate, key, value);
-           };
-           $delegate.remove = function(key){
-               return _remove.call($delegate, replace(key));
-           };
-           return $delegate;
-        }
-
-        function replace(templateUrl){
-            if(templateUrl){
-                return templateUrl.replace("{themed}", $themedProvider.baseUrl);
-            }
-            return templateUrl;
-        }
-    }
-});
 define('init/logger.config',[
     "app.module"
 ], function(app){
@@ -5708,7 +5713,6 @@ define('init/logger.config',[
 });
 define('init/app.config',[
     "app.module",
-    "./themed.config",
     "./logger.config"
 ], function(){
     "use strict";
