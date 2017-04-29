@@ -1,7 +1,9 @@
 define([
     "angular",
-    "jquery"
-],function(angular){
+    "blocks/log/log-require",
+    "themed/themed-require",
+    "jquery",
+], function(angular, logModuleName, themedModuleName) {
     "use strict";
-    return angular.module("ngUI.widget", []);
+    return angular.module("ngUI.widget", [logModuleName, themedModuleName]);
 });
