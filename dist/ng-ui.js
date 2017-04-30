@@ -469,7 +469,7 @@ define('blocks/log/log.factory',[
         return $logger.Logger;
     }
 });
-define('blocks/log/log-require',[
+define('blocks/log/index',[
     "./log.module",
     "./logger",
     "./log.provider",
@@ -522,8 +522,7 @@ define('themed/themed.provider',[
 });
 define('themed/themed.config',[
     "./themed.module",
-    "angular",
-    "./themed-require",
+    "angular"
 ], function(app, angular){
     "use strict";
 
@@ -574,7 +573,7 @@ define('themed/themed.config',[
         }
     }
 });
-define('themed/themed-require',[
+define('themed/index',[
     "./themed.module",
     "./themed.provider",
     "./themed.config"
@@ -584,8 +583,8 @@ define('themed/themed-require',[
 });
 define('widgets/widget.module',[
     "angular",
-    "blocks/log/log-require",
-    "themed/themed-require",
+    "blocks/log/index",
+    "themed/index",
     "jquery",
 ], function(angular, logModuleName, themedModuleName) {
     "use strict";
@@ -1968,7 +1967,7 @@ define('widgets/notify.service',[
         }
     }
 });
-define('widgets/widgets-require',[
+define('widgets/index',[
     "./widget.module",
     "./scrollbar.directive",
     "./number.directive",
@@ -2229,7 +2228,7 @@ define('ajax/ajax.service',[
         return (baseUrl + path).replace(/\/+/g, "/");
     }
 });
-define('ajax/ajax-require',[
+define('ajax/index',[
     "./ajax.module",
     "./ajax.config",
     "./ajax.service"
@@ -2239,9 +2238,9 @@ define('ajax/ajax-require',[
 });
 define('grid/grid.module',[
     "angular",
-    "widgets/widgets-require",
-    "ajax/ajax-require",
-    "themed/themed-require",
+    "widgets/index",
+    "ajax/index",
+    "themed/index",
     "angular-sanitize",
     "underscore",
     "jquery"
@@ -4067,7 +4066,7 @@ define('grid/grid.directive',[
         }
     }
 });
-define('grid/grid-require',[
+define('grid/index',[
     "./grid.module",
     "./grid.config",
     "./grid.directive"
@@ -4077,7 +4076,7 @@ define('grid/grid-require',[
 });
 define('validation/validation.module',[
     "angular",
-    "../themed/themed-require"
+    "../themed/index"
 ],function(angular, themedModuleName){
     "use strict";
     return angular.module("ngUI.validation", [themedModuleName]);
@@ -4526,7 +4525,7 @@ define('validation/submit-btn.directive',[
         }
     }
 });
-define('validation/validation-require',[
+define('validation/index',[
     "./validation.module",
     "./validation.config",
     "./vld-form-group.directive",
@@ -4677,7 +4676,7 @@ define('i18n/translate.filter',[
         };
     }
 });
-define('i18n/i18n-require',[
+define('i18n/index',[
     "./i18n.module",
     "./translate.filter"
 ], function(app){
@@ -4686,9 +4685,9 @@ define('i18n/i18n-require',[
 });
 define('modal/modal.module',[
     "angular",
-    "blocks/log/log-require",
-    "validation/validation-require",
-    "themed/themed-require",
+    "blocks/log/index",
+    "validation/index",
+    "themed/index",
     "angular-sanitize",
 ], function(angular, logModuleName, validationModuleName, themedModuleName) {
     "use strict";
@@ -5479,7 +5478,7 @@ define('modal/modal-draggable.directive',[
         }
     }
 });
-define('modal/modal-require',[
+define('modal/index',[
     "./modal.module",
     "./modal.directive",
     "./modal.service",
@@ -5672,13 +5671,13 @@ module.run(['$templateCache', function($templateCache) {
 
 });
 define('app.module',[
-    "grid/grid-require",
-    "validation/validation-require",
-    "themed/themed-require",
-    "i18n/i18n-require",
-    "blocks/log/log-require",
-    "ajax/ajax-require",
-    "modal/modal-require",
+    "grid/index",
+    "validation/index",
+    "themed/index",
+    "i18n/index",
+    "blocks/log/index",
+    "ajax/index",
+    "modal/index",
     "partials"
 ], function(uiGridModuleName, themedModuleName, validationModuleName, i18nModuleName, logModuleName, ajaxModuleName, modalModuleName){
     "use strict";

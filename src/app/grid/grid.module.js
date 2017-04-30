@@ -1,8 +1,8 @@
 define([
     "angular",
-    "widgets/widgets-require",
-    "ajax/ajax-require",
-    "themed/themed-require",
+    "widgets/index",
+    "ajax/index",
+    "themed/index",
     "angular-sanitize",
     "underscore",
     "jquery"

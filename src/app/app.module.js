@@ -1,11 +1,11 @@
 define([
-    "grid/grid-require",
-    "validation/validation-require",
-    "themed/themed-require",
-    "i18n/i18n-require",
-    "blocks/log/log-require",
-    "ajax/ajax-require",
-    "modal/modal-require",
+    "grid/index",
+    "validation/index",
+    "themed/index",
+    "i18n/index",
+    "blocks/log/index",
+    "ajax/index",
+    "modal/index",
     "partials"
 ], function(uiGridModuleName, themedModuleName, validationModuleName, i18nModuleName, logModuleName, ajaxModuleName, modalModuleName){
     "use strict";

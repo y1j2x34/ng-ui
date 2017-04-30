@@ -1,7 +1,7 @@
 define([
     "angular",
-    "blocks/log/log-require",
-    "themed/themed-require",
+    "blocks/log/index",
+    "themed/index",
     "jquery",
 ], function(angular, logModuleName, themedModuleName) {
     "use strict";

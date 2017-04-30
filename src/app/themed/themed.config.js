@@ -1,7 +1,6 @@
 define([
     "./themed.module",
-    "angular",
-    "./themed-require",
+    "angular"
 ], function(app, angular){
     "use strict";
 

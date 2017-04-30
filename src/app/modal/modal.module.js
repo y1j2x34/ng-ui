@@ -1,8 +1,8 @@
 define([
     "angular",
-    "blocks/log/log-require",
-    "validation/validation-require",
-    "themed/themed-require",
+    "blocks/log/index",
+    "validation/index",
+    "themed/index",
     "angular-sanitize",
 ], function(angular, logModuleName, validationModuleName, themedModuleName) {
     "use strict";
