@@ -3,5 +3,5 @@ module.exports = watchTask;
 
 function watchTask(){
     var gulpe = require("gulp");
-    gulp.watch("src/style//bootstrap/**/*.scss", ["sass"]);
+    gulp.watch("src/style/bootstrap/**/*.scss", ["sass"]);
 }

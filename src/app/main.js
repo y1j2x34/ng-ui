@@ -1,14 +1,7 @@
 require.config({
     baseUrl: "/src/app",
     paths: {
-        "partials": (function(env) {
-            "use strict";
-            if (env === "optimized") {
-                return "/dist/partials";
-            } else {
-                return "empty-partials";
-            }
-        })("${env}"),
+        "partials": "./empty-partials",
         "RandomUtil": "utils/random.util",
         "Subnet": "utils/subnet",
         "angular": "/vendors/angular/angular",

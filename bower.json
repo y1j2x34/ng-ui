@@ -22,7 +22,9 @@
     "jquery": "2.2.4",
     "listview": "*",
     "moment": "^2.18.1",
-    "requirejs": "2.3.3",
+    "requirejs": "2.3.3"
+  },
+  "devDependencies": {
     "compass-sass-mixins": "*"
   }
 }

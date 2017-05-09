@@ -20,6 +20,8 @@ define([
 
         function normalizeTreeNodeData(data){
             normalizeChildren(data);
+            return data;
+
             function normalizeChildren(children){
                 for(var i =0;i<children.length; i++){
                     var node = children[i];
@@ -29,8 +31,6 @@ define([
                     }
                 }
             }
-
-            return data;
         }
     }
 });

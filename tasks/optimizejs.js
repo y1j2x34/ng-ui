@@ -1,8 +1,8 @@
-// opitimizejsTask.dependTask = ["jshint", "html2js"];
+// optimizejsTask.dependTask = ["jshint", "html2js"];
 
-module.exports = opitimizejsTask;
+module.exports = optimizejsTask;
 
-function opitimizejsTask(){
+function optimizejsTask(){
     var gulp = require("gulp");
     var sourcemap = require("gulp-sourcemaps");
 

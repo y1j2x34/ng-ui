@@ -92,7 +92,21 @@ define([
             var parts = name.split(".");
             name = parts[0];
             var cls = parts[1];
-            var observersOfName = self.observers[name];
+            var observersOfName;
+
+            if(name === "" && (cls && cls.length > 0)){
+                observersOfName = {};
+                var observers = [];
+                for(var n in self.observers){
+                    var clsObs = self.observers[n];
+                    if(clsObs[cls]){
+                        observers.push.apply(observers, clsObs[cls]);
+                    }
+                }
+                observersOfName[cls] = observers;
+            }else{
+                observersOfName = self.observers[name];
+            }
 
             if (!observersOfName) {
                 return false;
