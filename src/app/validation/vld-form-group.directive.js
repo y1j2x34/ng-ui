@@ -40,7 +40,7 @@ define([
         }
         /**
          * ngModel decorator 会将ngModelController设置进来
-         * @param {object} ngModel NgModelController
+         * @param {Object} ngModel NgModelController
          */
         function $setNgModel(ngModel) {
             var config = self.config;

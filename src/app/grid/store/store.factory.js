@@ -91,7 +91,7 @@ define([
         /**
          * 加载数据
          * @param  {Object} params 加载参数
-         * @return {promise}
+         * @return {Promise}
          */
         function load(self, params) {
             var remoteOrder = {};

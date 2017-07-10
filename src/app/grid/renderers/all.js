@@ -6,7 +6,9 @@ define([
     "./stripe.renderer",
     "./editable.renderer",
     "./sequence.renderer",
-    "./check.renderer"
+    "./check.renderer",
+    "./fixed.renderer",
+    "./templateUrl.renderer"
 ], function(){
     "use strict";
     return Array.prototype.slice.call(arguments);

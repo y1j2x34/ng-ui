@@ -59,8 +59,8 @@
     }
     /**
      * 验证cidrblock, 返回错误详情
-     * @param  {string} cidrblock
-     * @return {object}
+     * @param  {String} cidrblock
+     * @return {Object}
      */
     function validationCidrBlock(cidrblock) {
         if (typeof cidrblock !== "string") {
@@ -199,7 +199,7 @@
 
     /**
      * 数字形式的IP转为数组
-     * @param  {number} val 数字形式IP地址
+     * @param  {Number} val 数字形式IP地址
      * @return {Array}
      */
     function toArray(val) {
@@ -250,7 +250,7 @@
     /**
      * IP地址转为整数
      * @param  {String} address IP地址
-     * @return {number}         整数形式
+     * @return {Number}         整数形式
      */
     function toInteger(address) {
         var matches = IP_ADDRESS_REGEX.exec(address);
@@ -263,7 +263,7 @@
     /**
      *
      * @param  {array} matches IP 地址正则解析结果
-     * @return {number}         整数形式的IP
+     * @return {Number}         整数形式的IP
      */
     function matchAddress(matches) {
         var addr = 0;

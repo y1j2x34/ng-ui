@@ -242,9 +242,9 @@ define([
         }
         /**
          * 请求指定页码数据
-         * @param  {number} page   目标页码
-         * @param  {object} params [description]
-         * @return {promise}
+         * @param  {Number} page   目标页码
+         * @param  {Object} params [description]
+         * @return {Promise}
          */
         function goPage(self, page, params) {
             if (self.pageCount === undefined || (page > 0 && page <= self.pageCount)) {
@@ -257,22 +257,22 @@ define([
         }
         /**
          * 请求下n页的数据
-         * @param  {number} step 往后几页
+         * @param  {Number} step 往后几页
          */
         function nextPage(self, step) {
             self.goPage(self.page + (step || 1));
         }
         /**
          * 请求上n页的数据
-         * @param  {number} step 往上几页
+         * @param  {Number} step 往上几页
          */
         function prevPage(self, step) {
             self.goPage(self.page - (step || 1));
         }
         /**
          * 获取一行数据
-         * @param  {any} id  数据ID
-         * @return {object}      一行数据
+         * @param  {Any} id  数据ID
+         * @return {Object}      一行数据
          */
         function getRow(self, id) {
             return self.dataMap[id];

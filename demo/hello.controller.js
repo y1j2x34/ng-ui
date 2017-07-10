@@ -56,28 +56,28 @@ define([
                 $modals.alert("用户取消了");
             });
             setTimeout(function(){
-                console.info("000");
+                console.info("1. window.setTimeout()");
             });
             $timeout(function(){
-                console.info("bbb");
+                console.info("2. $timeout()");
             });
             $timeout().then(function(){
-                console.info("aaa");
+                console.info("3. $timeout().then");
             });
             $timeout(function(){
-                console.info("ddd");
+                console.info("4. $timeout()");
             });
             $q.when().then(function(){
-                console.info("22222");
+                console.info("5. $q.when().then()");
             });
             setTimeout(function(){
-                console.info("1111");
+                console.info("6. window.setTimeout()");
             });
-            console.info("ccc");
+            console.info("7. out");
 
-            $modals.alert("第一个Alert");
-            $modals.alert("第二个Alert");
-            $modals.alert("第三个Alert");
+            // $modals.alert("第一个Alert");
+            // $modals.alert("第二个Alert");
+            // $modals.alert("第三个Alert");
             self.treeData = [{
                 id: "0",
                 text: "Animal",
@@ -162,6 +162,11 @@ define([
                     align: "center",
                     width: 200,
                     visible: false
+                }, {
+                    title: "操作",
+                    fixed: true,
+                    width: 200,
+                    templateUrl: "/demo/partials/grid_opr.html"
                 }],
                 ext: {
                     accordion: {
@@ -182,7 +187,7 @@ define([
                 },
                 store: store,
                 height: 300,
-                fixHeader: true
+                fixHeader: false
             };
             self.grid = new UIGrid(gridOptions);
             self.grid.on("selectAll", function(event){

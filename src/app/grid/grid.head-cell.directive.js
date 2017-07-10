@@ -24,7 +24,10 @@ define([
                     return _.isFunction(render.render);
                 })
             ).each(function(renderer) {
-                element.addClass("ui_grid_head_rendered--" + renderer.name);
+                var renderHeaderClass = renderer.renderHeaderClass;
+                if(renderHeaderClass !== false){
+                    element.addClass(renderHeaderClass || ("ui_grid_head_rendered--" + renderer.name));
+                }
                 // renderer.render(element, renderer.def, header.def, grid);
                 renderer.render({
                     element: element,

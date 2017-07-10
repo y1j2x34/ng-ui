@@ -23,12 +23,12 @@ define([
             options = angular.extend({}, defaultOptions, options);
             /**
              * 模态框唯一标识
-             * @type {string}
+             * @type {String}
              */
             var id = options.id;
             /**
              * 模态框数据， 以$modalData形式注入模态框controller中
-             * @type {any}
+             * @type {Any}
              */
             var data = options.data;
             /**
@@ -36,12 +36,12 @@ define([
              */
             var controller = options.controller;
             /**
-             * @type {string} 默认$ctrl
+             * @type {String} 默认$ctrl
              */
             var controllerAs = options.controllerAs;
             /**
              * 内容模板，
-             * @type {string}
+             * @type {String}
              */
             var template = options.template;
             /**
@@ -51,18 +51,18 @@ define([
             var destroyOnHidden = options.destroyOnHidden !== false;
             /**
              *头部模板地址，默认使用$modalProvider.options.headerTemplateUrl
-             * @type {string}
+             * @type {String}
              */
             var headerTemplateUrl = options.headerTemplateUrl;
             /**
              *
              * 内容模板地址，默认使用$modalProvider.options.bodyTemplateUrl
-             * @type {string}
+             * @type {String}
              */
             var bodyTemplateUrl = options.bodyTemplateUrl;
             /**
              * 底部模板地址，默认使用$modalProvider.options.footerTemplateUrl
-             * @type {string}
+             * @type {String}
              */
             var footerTemplateUrl = options.footerTemplateUrl;
             /**
@@ -73,22 +73,22 @@ define([
             var keyboard = options.keyboard;
             /**
              * header icon css class
-             * @type {string}
+             * @type {String}
              */
             var iconCls = options.iconCls;
             /**
              * .dialog-modal css class
-             * @type {string}
+             * @type {String}
              */
             var modalCls = options.cls;
             /**
              * 标题
-             * @type {string}
+             * @type {String}
              */
             var title = options.title;
             /**
              * 模态框宽度
-             * @type {number}
+             * @type {Number}
              */
             var width = options.width;
             /**

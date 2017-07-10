@@ -26,11 +26,14 @@ define([
             scope.$header = $column.def;
             var $rowdata = scope.$rowdata;
             _(
-                _.filter($column.renderers, function(renderer){
+                _.filter($column.renderers, function(renderer) {
                     return _.isFunction(renderer.render);
                 })
-            ).each(function(renderer){
-                element.addClass("ui_grid_cell_rendered--" + renderer.name);
+            ).each(function(renderer) {
+                var renderRowClass = renderer.renderRowClass;
+                if (renderRowClass !== false) {
+                    element.addClass(renderRowClass || ("ui_grid_cell_rendered--" + renderer.name));
+                }
                 renderer.render({
                     element: element,
                     value: renderer.def,
@@ -44,7 +47,7 @@ define([
         }
 
         function gridCellPostLink(scope, element, attrs, grid) {
-            if(!grid.delegate.fixHeader){
+            if (!grid.delegate.fixHeader) {
                 return;
             }
             var $column = scope.$column;
@@ -59,8 +62,8 @@ define([
 
         function autoAdjustWidth(scope, element, $column, columnIndex) {
             var $header = element.closest(".grid_container") //
-                        .find(".grid_header table>thead>tr>th") //
-                        .eq(columnIndex);
+                .find(".grid_header table>thead>tr>th") //
+                .eq(columnIndex);
             var resizeEventId = RandomUtil.unique("resize.");
 
             jqWindow.on(resizeEventId, function() {
@@ -72,7 +75,7 @@ define([
             });
 
             adjustCellWidth();
-            var timmerPromise = $timeout(function(){
+            var timmerPromise = $timeout(function() {
                 adjustCellWidth();
                 $timeout.cancel(timmerPromise);
             });
@@ -82,8 +85,9 @@ define([
                 setElementWidth(element, Math.floor(columnWidth));
             }
             var lastWidth;
+
             function setElementWidth(element, width) {
-                if(lastWidth === width){
+                if (lastWidth === width) {
                     return;
                 }
                 lastWidth = width;

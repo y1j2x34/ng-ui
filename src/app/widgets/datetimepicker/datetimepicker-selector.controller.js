@@ -63,7 +63,7 @@ define([
         }
         /**
          * 展开年份列表事件
-         * @param  {object} scrollbarModel 年份列表滚动条
+         * @param  {Object} scrollbarModel 年份列表滚动条
          * @return {void}
          */
         function yearSelectorFocus(scrollbarModel){
@@ -72,7 +72,7 @@ define([
         }
         /**
          * 展开月份列表事件
-         * @param  {object} scrollbarModel 月份列表滚动条
+         * @param  {Object} scrollbarModel 月份列表滚动条
          * @return {void}
          */
         function monthSelectorFocus(scrollbarModel){
