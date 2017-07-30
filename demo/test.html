@@ -29,6 +29,24 @@
         <div class="container">
             <div class="row">
                 <div class="col-xs-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h5 class="panel-title">图表</h5>
+                        </div>
+                        <div class="panel-body">
+                            <div ui-echarts="" title="图表" style="height: 300px">
+                                <div ui-echarts-x-axis="" type="category" data="self.chartTimedata"></div>
+                                <div ui-echarts-y-axis="" name="带宽（单位：Mbps）" label-formatter="{value} Mbps"></div>
+                                <div ui-echarts-series="" data="self.chartData" name="测试数据"></div>
+                                <div ui-echarts-series="" data="self.chartData" name="测试数据2" type="bar" sampling="max"></div>
+                                <div ui-echarts-zoom="" start="0" end="40"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
                     <div ng-include="'partials/ui-tree.html'">
 
                     </div>

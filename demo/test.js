@@ -12,7 +12,8 @@ require.config({
         "listview": "/vendors/listview/dist/listview",
         "moment": "/vendors/moment/min/moment.min",
         "pnotify": "/vendors/pnotify/dist/pnotify",
-        "pnotify.buttons": "/vendors/pnotify/dist/pnotify.buttons"
+        "pnotify.buttons": "/vendors/pnotify/dist/pnotify.buttons",
+        "echarts": "/vendors/echarts/dist/echarts"
     },
     bundles: {
         // "ngUI": ["ng-ui-app"],

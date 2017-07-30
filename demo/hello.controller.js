@@ -10,51 +10,64 @@ define([
         activate();
 
         function activate() {
-            var modal = $modals.create({
-                keyboard: true,
-                show: true,
-                template: "成功！",
-                title: "模态框标题",
-                iconCls: "glyphicon glyphicon-list",
-                cls: "inline"
-            });
-            var index = 0;
-            modal.on("show", function(){
-                logger.info("modal show", index++);
-            });
-            modal.on("shown", function(){
-                logger.info("modal shown", index++);
-            });
-            modal.on("hide", function(){
-                logger.info("modal hide", index++);
-            });
-            modal.on("hidden", function(){
-                logger.info("modal hidden", index++);
-            });
-            modal.on("confirm", function(){
-                modal.destroy();
-            });
-            modal.on("destroy", function(){
-                logger.info("modal destroyed", index++);
-                $modals
-                    .confirm("哈哈哈")
-                    .then(function(){
-                        $modals.alert("用户确定了");
-                    }, function(){
-                        $modals.alert("用户取消了");
-                    })
-                    ;
-            });
-            $modals.prompt({
-                label:"请输入您的名字：",
-                required: true,
-                placeholder: "请输入名字",
-                warning: "名字不能为空！"
-            }).then(function(content){
-                $modals.alert("用户输入了："+content);
-            }, function(){
-                $modals.alert("用户取消了");
-            });
+            var chartData = [];
+            var chartTimes = [];
+            var baseTimestamp = new Date(2017, 7, 30).getTime();
+            var fiveTimestamp = 1000 * 60 * 5;
+            for(var i=0;i<100;i++){
+                var now = new Date(baseTimestamp + fiveTimestamp);
+                chartTimes.push(now.getMonth() + "-" + now.getDate() + " " + now.getHours() + ":" + now.getMinutes());
+                chartData.push(Math.floor(Math.random() * 1024));
+                baseTimestamp = now.getTime();
+            }
+            self.chartTimedata = chartTimes; 
+            self.chartData = chartData;
+            
+            // var modal = $modals.create({
+            //     keyboard: true,
+            //     show: true,
+            //     template: "成功！",
+            //     title: "模态框标题",
+            //     iconCls: "glyphicon glyphicon-list",
+            //     cls: "inline"
+            // });
+            // var index = 0;
+            // modal.on("show", function(){
+            //     logger.info("modal show", index++);
+            // });
+            // modal.on("shown", function(){
+            //     logger.info("modal shown", index++);
+            // });
+            // modal.on("hide", function(){
+            //     logger.info("modal hide", index++);
+            // });
+            // modal.on("hidden", function(){
+            //     logger.info("modal hidden", index++);
+            // });
+            // modal.on("confirm", function(){
+            //     modal.destroy();
+            // });
+            // modal.on("destroy", function(){
+            //     logger.info("modal destroyed", index++);
+            //     $modals
+            //         .confirm("哈哈哈")
+            //         .then(function(){
+            //             $modals.alert("用户确定了");
+            //         }, function(){
+            //             $modals.alert("用户取消了");
+            //         })
+            //         ;
+            // });
+            // $modals.prompt({
+            //     label:"请输入您的名字：",
+            //     required: true,
+            //     placeholder: "请输入名字",
+            //     warning: "名字不能为空！"
+            // }).then(function(content){
+            //     $modals.alert("用户输入了："+content);
+            // }, function(){
+            //     $modals.alert("用户取消了");
+            // });
             setTimeout(function(){
                 console.info("1. window.setTimeout()");
             });
@@ -164,7 +177,7 @@ define([
                     visible: false
                 }, {
                     title: "操作",
-                    fixed: true,
+                    // fixed: true,
                     width: 200,
                     templateUrl: "/demo/partials/grid_opr.html"
                 }],
@@ -182,8 +195,7 @@ define([
                         enabled: true,
                         oddClass: "odd", // 奇数行class
                         evenClass: "even" // 偶数行class
-                    },
-
+                    }
                 },
                 store: store,
                 height: 300,

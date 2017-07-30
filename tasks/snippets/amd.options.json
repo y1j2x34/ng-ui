@@ -18,7 +18,8 @@
         "pnotify": "empty:",
         "pnotify.buttons": "empty:",
         "listview": "empty:",
-        "listview.plugin": "empty:"
+        "listview.plugin": "empty:",
+        "echarts": ":empty"
     },
     "shim":{
         "angular-sanitize": ["angular"]

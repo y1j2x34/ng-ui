@@ -1313,7 +1313,7 @@ define('widgets/datetimepicker/datetimepicker-selector.controller',[
         }
         /**
          * 展开年份列表事件
-         * @param  {object} scrollbarModel 年份列表滚动条
+         * @param  {Object} scrollbarModel 年份列表滚动条
          * @return {void}
          */
         function yearSelectorFocus(scrollbarModel){
@@ -1322,7 +1322,7 @@ define('widgets/datetimepicker/datetimepicker-selector.controller',[
         }
         /**
          * 展开月份列表事件
-         * @param  {object} scrollbarModel 月份列表滚动条
+         * @param  {Object} scrollbarModel 月份列表滚动条
          * @return {void}
          */
         function monthSelectorFocus(scrollbarModel){
@@ -1752,6 +1752,8 @@ define('widgets/tree/tree.controller',[
 
         function normalizeTreeNodeData(data){
             normalizeChildren(data);
+            return data;
+
             function normalizeChildren(children){
                 for(var i =0;i<children.length; i++){
                     var node = children[i];
@@ -1761,8 +1763,6 @@ define('widgets/tree/tree.controller',[
                     }
                 }
             }
-
-            return data;
         }
     }
 });
@@ -2764,6 +2764,30 @@ define('grid/renderers/check.renderer',[
         }
     };
 });
+define('grid/renderers/fixed.renderer',[
+
+], function() {
+    "use strict";
+    return {
+        type: "cell",
+        name: "fixed",
+        init: function() {
+            // PASS
+        }
+    };
+});
+define('grid/renderers/templateUrl.renderer',[],function(){
+    "use strict";
+    return {
+        type: "cell",
+        name: "templateUrl",
+        renderRowClass: false,
+        renderHeaderClass: false,
+        row: function(options){
+            options.element.append("<div ng-include src='\""+options.value+"\"'>");
+        }
+    };
+});
 define('grid/renderers/all',[
     "./value.renderer",
     "./title.renderer",
@@ -2772,7 +2796,9 @@ define('grid/renderers/all',[
     "./stripe.renderer",
     "./editable.renderer",
     "./sequence.renderer",
-    "./check.renderer"
+    "./check.renderer",
+    "./fixed.renderer",
+    "./templateUrl.renderer"
 ], function(){
     "use strict";
     return Array.prototype.slice.call(arguments);
@@ -3039,7 +3065,21 @@ define('event/subject',[
             var parts = name.split(".");
             name = parts[0];
             var cls = parts[1];
-            var observersOfName = self.observers[name];
+            var observersOfName;
+
+            if(name === "" && (cls && cls.length > 0)){
+                observersOfName = {};
+                var observers = [];
+                for(var n in self.observers){
+                    var clsObs = self.observers[n];
+                    if(clsObs[cls]){
+                        observers.push.apply(observers, clsObs[cls]);
+                    }
+                }
+                observersOfName[cls] = observers;
+            }else{
+                observersOfName = self.observers[name];
+            }
 
             if (!observersOfName) {
                 return false;
@@ -3338,7 +3378,7 @@ define('grid/store/store.factory',[
         /**
          * 加载数据
          * @param  {Object} params 加载参数
-         * @return {promise}
+         * @return {Promise}
          */
         function load(self, params) {
             var remoteOrder = {};
@@ -3674,9 +3714,9 @@ define('grid/grid.factory',[
         }
         /**
          * 请求指定页码数据
-         * @param  {number} page   目标页码
-         * @param  {object} params [description]
-         * @return {promise}
+         * @param  {Number} page   目标页码
+         * @param  {Object} params [description]
+         * @return {Promise}
          */
         function goPage(self, page, params) {
             if (self.pageCount === undefined || (page > 0 && page <= self.pageCount)) {
@@ -3689,22 +3729,22 @@ define('grid/grid.factory',[
         }
         /**
          * 请求下n页的数据
-         * @param  {number} step 往后几页
+         * @param  {Number} step 往后几页
          */
         function nextPage(self, step) {
             self.goPage(self.page + (step || 1));
         }
         /**
          * 请求上n页的数据
-         * @param  {number} step 往上几页
+         * @param  {Number} step 往上几页
          */
         function prevPage(self, step) {
             self.goPage(self.page - (step || 1));
         }
         /**
          * 获取一行数据
-         * @param  {any} id  数据ID
-         * @return {object}      一行数据
+         * @param  {Any} id  数据ID
+         * @return {Object}      一行数据
          */
         function getRow(self, id) {
             return self.dataMap[id];
@@ -3834,7 +3874,10 @@ define('grid/grid.head-cell.directive',[
                     return _.isFunction(render.render);
                 })
             ).each(function(renderer) {
-                element.addClass("ui_grid_head_rendered--" + renderer.name);
+                var renderHeaderClass = renderer.renderHeaderClass;
+                if(renderHeaderClass !== false){
+                    element.addClass(renderHeaderClass || ("ui_grid_head_rendered--" + renderer.name));
+                }
                 // renderer.render(element, renderer.def, header.def, grid);
                 renderer.render({
                     element: element,
@@ -3916,11 +3959,14 @@ define('grid/grid.row-cell.directive',[
             scope.$header = $column.def;
             var $rowdata = scope.$rowdata;
             _(
-                _.filter($column.renderers, function(renderer){
+                _.filter($column.renderers, function(renderer) {
                     return _.isFunction(renderer.render);
                 })
-            ).each(function(renderer){
-                element.addClass("ui_grid_cell_rendered--" + renderer.name);
+            ).each(function(renderer) {
+                var renderRowClass = renderer.renderRowClass;
+                if (renderRowClass !== false) {
+                    element.addClass(renderRowClass || ("ui_grid_cell_rendered--" + renderer.name));
+                }
                 renderer.render({
                     element: element,
                     value: renderer.def,
@@ -3934,7 +3980,7 @@ define('grid/grid.row-cell.directive',[
         }
 
         function gridCellPostLink(scope, element, attrs, grid) {
-            if(!grid.delegate.fixHeader){
+            if (!grid.delegate.fixHeader) {
                 return;
             }
             var $column = scope.$column;
@@ -3949,8 +3995,8 @@ define('grid/grid.row-cell.directive',[
 
         function autoAdjustWidth(scope, element, $column, columnIndex) {
             var $header = element.closest(".grid_container") //
-                        .find(".grid_header table>thead>tr>th") //
-                        .eq(columnIndex);
+                .find(".grid_header table>thead>tr>th") //
+                .eq(columnIndex);
             var resizeEventId = RandomUtil.unique("resize.");
 
             jqWindow.on(resizeEventId, function() {
@@ -3962,7 +4008,7 @@ define('grid/grid.row-cell.directive',[
             });
 
             adjustCellWidth();
-            var timmerPromise = $timeout(function(){
+            var timmerPromise = $timeout(function() {
                 adjustCellWidth();
                 $timeout.cancel(timmerPromise);
             });
@@ -3972,8 +4018,9 @@ define('grid/grid.row-cell.directive',[
                 setElementWidth(element, Math.floor(columnWidth));
             }
             var lastWidth;
+
             function setElementWidth(element, width) {
-                if(lastWidth === width){
+                if (lastWidth === width) {
                     return;
                 }
                 lastWidth = width;
@@ -4321,7 +4368,7 @@ define('validation/vld-form-group.directive',[
         }
         /**
          * ngModel decorator 会将ngModelController设置进来
-         * @param {object} ngModel NgModelController
+         * @param {Object} ngModel NgModelController
          */
         function $setNgModel(ngModel) {
             var config = self.config;
@@ -5002,12 +5049,12 @@ define('modal/modal.model.factory',[
             options = angular.extend({}, defaultOptions, options);
             /**
              * 模态框唯一标识
-             * @type {string}
+             * @type {String}
              */
             var id = options.id;
             /**
              * 模态框数据， 以$modalData形式注入模态框controller中
-             * @type {any}
+             * @type {Any}
              */
             var data = options.data;
             /**
@@ -5015,12 +5062,12 @@ define('modal/modal.model.factory',[
              */
             var controller = options.controller;
             /**
-             * @type {string} 默认$ctrl
+             * @type {String} 默认$ctrl
              */
             var controllerAs = options.controllerAs;
             /**
              * 内容模板，
-             * @type {string}
+             * @type {String}
              */
             var template = options.template;
             /**
@@ -5030,18 +5077,18 @@ define('modal/modal.model.factory',[
             var destroyOnHidden = options.destroyOnHidden !== false;
             /**
              *头部模板地址，默认使用$modalProvider.options.headerTemplateUrl
-             * @type {string}
+             * @type {String}
              */
             var headerTemplateUrl = options.headerTemplateUrl;
             /**
              *
              * 内容模板地址，默认使用$modalProvider.options.bodyTemplateUrl
-             * @type {string}
+             * @type {String}
              */
             var bodyTemplateUrl = options.bodyTemplateUrl;
             /**
              * 底部模板地址，默认使用$modalProvider.options.footerTemplateUrl
-             * @type {string}
+             * @type {String}
              */
             var footerTemplateUrl = options.footerTemplateUrl;
             /**
@@ -5052,22 +5099,22 @@ define('modal/modal.model.factory',[
             var keyboard = options.keyboard;
             /**
              * header icon css class
-             * @type {string}
+             * @type {String}
              */
             var iconCls = options.iconCls;
             /**
              * .dialog-modal css class
-             * @type {string}
+             * @type {String}
              */
             var modalCls = options.cls;
             /**
              * 标题
-             * @type {string}
+             * @type {String}
              */
             var title = options.title;
             /**
              * 模态框宽度
-             * @type {number}
+             * @type {Number}
              */
             var width = options.width;
             /**
@@ -5487,6 +5534,106 @@ define('modal/index',[
     "use strict";
     return app.name;
 });
+define('charts/charts.module',[
+    "angular",
+    "blocks/log/index",
+], function(angular, logModuleName){
+    "use strict";
+    return angular.module("ngUI.charts", [logModuleName]);
+});
+define('charts/echarts.directive',[
+    "./charts.module"
+], function (app) {
+    "use strict";
+    app.directive("uiEcharts", echartsDirective);
+
+    /* @ngInject */
+    function echartsDirective(){
+        var directive = {
+            restrict: "AE",
+            scope: true,
+            controller: "EchartsController",
+            controllerAs: "chart",
+            bindToController: {
+                title: "@",
+                subTitle:"@?"
+            }
+        };
+        return directive;
+    }
+});
+define('charts/echarts-series.directive',[
+    "./charts.module",
+    "./echarts.directive"
+], function(app){
+    "use strict";
+    app.directive("uiEchartsSeries", echartsSeriesDirective);
+
+    /* @ngInject */
+    function echartsSeriesDirective(){
+        var directive = {
+            restrict: "AE",
+            require: "^uiEcharts",
+            controller: "EchartsSeriesController",
+            controllerAs: "series",
+            bindToController: {
+                data: "<",
+                name: "@",
+                /**
+                 * 类型
+                 * 可选：
+                 * line
+                 * map
+                 * radar
+                 * bar
+                 * pie
+                 * scatter
+                 * ...
+                 * @type String
+                 */
+                type: "@", // line
+                /**
+                 * 堆叠
+                 */
+                stack: "@?", 
+                /**
+                 * 
+                 * 是否平滑曲线显示， type等于line时有效
+                 * @type Boolean
+                 */
+                smooth: "<",
+                /**
+                 * 折线图在数据量远大于像素点时候的降采样策略，开启后可以有效的优化图表的绘制效率，默认关闭，也就是全部绘制不过滤数据点。
+                 * 可选：
+                 * 'average' 取过滤点的平均值
+                 * 'max'取过滤点的最大值
+                 * 'min'取过滤点的最小值
+                 * 'sum'取过滤点的和
+                 */
+                sampling: "@?",
+                /**
+                 * 线条样式：
+                 * {
+                 *  color: "自适应",
+                 *  type: "solid",
+                 *  width: 2,
+                 *  opacity: 1
+                 * }
+                 */
+                lineStyle: "<?"
+            }
+        };
+        return directive;
+    }
+});
+define('charts/index',[
+    "./charts.module",
+    "./echarts-series.directive",
+    "./echarts.directive"
+], function(app){
+    "use strict";
+    return app.name;
+});
 (function(global, factory){
     "use strict";
     if (typeof define === "function" && define.amd){
@@ -5678,8 +5825,9 @@ define('app.module',[
     "blocks/log/index",
     "ajax/index",
     "modal/index",
+    "charts/index",
     "partials"
-], function(uiGridModuleName, themedModuleName, validationModuleName, i18nModuleName, logModuleName, ajaxModuleName, modalModuleName){
+], function(uiGridModuleName, themedModuleName, validationModuleName, i18nModuleName, logModuleName, ajaxModuleName, modalModuleName, chartsModuleName){
     "use strict";
     var deps = [
         "ng",
@@ -5690,7 +5838,8 @@ define('app.module',[
         i18nModuleName,
         logModuleName,
         ajaxModuleName,
-        modalModuleName
+        modalModuleName,
+        chartsModuleName
     ];
     return angular.module("ngUI", deps);
 });

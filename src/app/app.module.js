@@ -6,8 +6,9 @@ define([
     "blocks/log/index",
     "ajax/index",
     "modal/index",
+    "charts/index",
     "partials"
-], function(uiGridModuleName, themedModuleName, validationModuleName, i18nModuleName, logModuleName, ajaxModuleName, modalModuleName){
+], function(uiGridModuleName, themedModuleName, validationModuleName, i18nModuleName, logModuleName, ajaxModuleName, modalModuleName, chartsModuleName){
     "use strict";
     var deps = [
         "ng",
@@ -18,7 +19,8 @@ define([
         i18nModuleName,
         logModuleName,
         ajaxModuleName,
-        modalModuleName
+        modalModuleName,
+        chartsModuleName
     ];
     return angular.module("ngUI", deps);
 });

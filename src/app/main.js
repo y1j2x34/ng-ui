@@ -13,7 +13,8 @@ require.config({
         "listview": "/vendors/listview/dist/listview",
         "moment": "/vendors/moment/min/moment-with-locales.min",
         "pnotify": "/vendors/pnotify/dist/pnotify",
-        "pnotify.buttons": "/vendors/pnotify/dist/pnotify.buttons"
+        "pnotify.buttons": "/vendors/pnotify/dist/pnotify.buttons",
+        "echarts": "/vendors/echarts/dist/echarts"
     },
     bundles: {
         "listview": ["listview.plugin"]

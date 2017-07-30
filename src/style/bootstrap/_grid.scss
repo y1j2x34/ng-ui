@@ -17,6 +17,10 @@ $grid_sequence_cell_width: 2em;
                 >th{
                     font-weight: bold;
                 }
+                >th.ui_grid_head_rendered--fixed,
+                >td.ui_grid_cell_rendered--fixed{
+                    height: auto;
+                }
             }
         }
     }
@@ -50,6 +54,11 @@ $grid_sequence_cell_width: 2em;
         vertical-align: middle;
         text-overflow: ellipsis;
         word-wrap: normal;
+    }
+    .ui_grid_head_rendered--fixed,
+    .ui_grid_cell_rendered--fixed
+    {
+        position: absolute;
     }
     .ui_grid_cell_rendered--check,
     .ui_grid_head_rendered--check
